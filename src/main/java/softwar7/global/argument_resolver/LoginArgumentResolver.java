@@ -18,7 +18,7 @@ import softwar7.domain.member.Member;
 import softwar7.domain.member.MemberSession;
 import softwar7.global.annotation.Login;
 import softwar7.global.exception.UnAuthorizedException;
-import softwar7.mapper.MemberMapper;
+import softwar7.mapper.member.MemberMapper;
 import softwar7.repository.jwt.JwtRefreshTokenRepository;
 import softwar7.repository.member.MemberRepository;
 

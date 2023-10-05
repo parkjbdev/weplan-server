@@ -1,4 +1,4 @@
-package softwar7.mapper;
+package softwar7.mapper.member;
 
 import softwar7.domain.member.Member;
 import softwar7.domain.member.MemberSession;
