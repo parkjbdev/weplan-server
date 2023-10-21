@@ -1,6 +1,6 @@
 package softwar7.mapper.member;
 
-import softwar7.domain.member.Member;
+import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.MemberSession;
 
 public enum MemberMapper {

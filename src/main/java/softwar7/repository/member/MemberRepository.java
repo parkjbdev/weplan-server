@@ -1,7 +1,7 @@
 package softwar7.repository.member;
 
 import org.springframework.stereotype.Repository;
-import softwar7.domain.member.Member;
+import softwar7.domain.member.persist.Member;
 import softwar7.global.exception.NotFoundException;
 
 import static softwar7.global.constant.ExceptionMessage.MEMBER_NOT_FOUND_EXCEPTION;
