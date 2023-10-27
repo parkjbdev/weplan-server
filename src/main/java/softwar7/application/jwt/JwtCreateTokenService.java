@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
-import softwar7.domain.member.MemberSession;
+import softwar7.domain.member.vo.MemberSession;
 import softwar7.global.exception.BadRequestException;
 
 import javax.crypto.SecretKey;

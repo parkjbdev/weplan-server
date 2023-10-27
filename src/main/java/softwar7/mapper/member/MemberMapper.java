@@ -1,7 +1,9 @@
 package softwar7.mapper.member;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import softwar7.domain.member.persist.Member;
-import softwar7.domain.member.MemberSession;
+import softwar7.domain.member.vo.MemberSession;
+import softwar7.mapper.member.dto.MemberSignupRequest;
 
 public enum MemberMapper {
 
@@ -11,7 +13,19 @@ public enum MemberMapper {
     public static MemberSession toMemberSession(final Member member) {
         return MemberSession.builder()
                 .id(member.getId())
-                .nickname(member.getNickname())
+                .username(member.getUsername())
+                .build();
+    }
+
+    public static Member toEntity(final MemberSignupRequest dto, final PasswordEncoder passwordEncoder) {
+        String encodedPassword = passwordEncoder.encode(dto.password());
+
+        return Member.builder()
+                .loginId(dto.loginId())
+                .password(encodedPassword)
+                .username(dto.name())
+                .phoneNumber(dto.phoneNumber())
+                .roleType(dto.roleType())
                 .build();
     }
 }

@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softwar7.domain.jwt.JwtRefreshToken;
-import softwar7.domain.member.MemberSession;
+import softwar7.domain.member.vo.MemberSession;
 import softwar7.mapper.jwt.JwtRefreshTokenMapper;
 import softwar7.repository.jwt.JwtRefreshTokenRepository;
 

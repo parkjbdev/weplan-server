@@ -15,7 +15,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import softwar7.domain.jwt.JwtRefreshToken;
 import softwar7.domain.member.persist.Member;
-import softwar7.domain.member.MemberSession;
+import softwar7.domain.member.vo.MemberSession;
 import softwar7.global.annotation.Login;
 import softwar7.global.exception.UnAuthorizedException;
 import softwar7.mapper.member.MemberMapper;
