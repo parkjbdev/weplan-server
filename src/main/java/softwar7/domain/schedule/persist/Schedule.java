@@ -32,24 +32,24 @@ public class Schedule extends BaseTimeEntity {
 
     private String content;
 
-    private LocalDateTime start;
+    private LocalDateTime startTime;
 
-    private LocalDateTime end;
+    private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
     private Approval approval;
 
     @Builder
-    private Schedule(final Long memberId, final Long channelId, final String username,
+    private Schedule(final long memberId, final long channelId, final String username,
                     final String scheduleName, final String content,
-                    final LocalDateTime start, final LocalDateTime end, final Approval approval) {
+                    final LocalDateTime startTime, final LocalDateTime endTime, final Approval approval) {
         this.memberId = memberId;
         this.channelId = channelId;
         this.username = username;
         this.scheduleName = scheduleName;
         this.content = content;
-        this.start = start;
-        this.end = end;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.approval = approval;
     }
 }

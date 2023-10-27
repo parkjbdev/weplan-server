@@ -1,5 +1,6 @@
 package softwar7.presentation.member;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping("/api/signup")
-    public void signup(@RequestBody final MemberSignupRequest dto) {
+    public void signup(@RequestBody @Valid final MemberSignupRequest dto) {
         memberSignupService.signup(dto);
     }
 }
