@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import softwar7.application.member.MemberSigninService;
 import softwar7.application.member.MemberSignupService;
-import softwar7.domain.member.persist.Member;
-import softwar7.mapper.member.MemberMapper;
-import softwar7.mapper.member.dto.MemberResponse;
 import softwar7.mapper.member.dto.MemberSigninRequest;
 import softwar7.mapper.member.dto.MemberSignupRequest;
 import softwar7.mapper.member.dto.SigninResponse;
@@ -28,12 +25,12 @@ public class MemberController {
         this.memberSigninService = memberSigninService;
     }
 
-    @PostMapping("/api/signup")
+    @PostMapping("/signup")
     public void signup(@RequestBody @Valid final MemberSignupRequest dto) {
         memberSignupService.signup(dto);
     }
 
-    @PostMapping("/api/signin")
+    @PostMapping("/signin")
     public SigninResponse signin(@RequestBody @Valid final MemberSigninRequest dto,
                                  final HttpServletResponse response) {
         Boolean adminType = memberSigninService.signin(dto, response);
