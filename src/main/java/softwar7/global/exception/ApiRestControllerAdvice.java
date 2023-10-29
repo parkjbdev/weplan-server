@@ -19,16 +19,10 @@ public class ApiRestControllerAdvice {
     // 400
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public MethodArgumentExceptionResponse methodArgumentNotValidException(
+    public ExceptionResponse methodArgumentNotValidException(
             final MethodArgumentNotValidException e
     ) {
-        MethodArgumentExceptionResponse exceptionResponse = new MethodArgumentExceptionResponse(
-                BAD_REQUEST.statusCode,
-                new ConcurrentHashMap<>()
-        );
-
-        e.getFieldErrors().forEach(exceptionResponse::addValidation);
-        return exceptionResponse;
+        return new ExceptionResponse("400", "형식에 맞지 않습니다");
     }
 
     // 400

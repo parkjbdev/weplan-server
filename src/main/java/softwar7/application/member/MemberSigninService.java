@@ -7,11 +7,14 @@ import softwar7.application.jwt.JwtFacade;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
+import softwar7.global.constant.ExceptionMessage;
 import softwar7.global.constant.TimeConstant;
+import softwar7.global.exception.BadRequestException;
 import softwar7.mapper.member.MemberMapper;
 import softwar7.mapper.member.dto.MemberSigninRequest;
 import softwar7.repository.member.MemberRepository;
 
+import static softwar7.global.constant.ExceptionMessage.*;
 import static softwar7.global.constant.TimeConstant.*;
 
 
@@ -39,8 +42,10 @@ public class MemberSigninService {
             String refreshToken = jwtFacade.createRefreshToken(memberSession.id(), ONE_MONTH.value);
             jwtFacade.saveJwtRefreshToken(memberSession.id(), refreshToken);
             jwtFacade.setHeader(response, accessToken, refreshToken);
+
+            return member.getRoleType().equals(RoleType.ADMIN);
         }
 
-        return member.getRoleType().equals(RoleType.ADMIN);
+        throw new BadRequestException(PASSWORD_NOT_MATCH_EXCEPTION.message);
     }
 }
