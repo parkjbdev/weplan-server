@@ -26,7 +26,7 @@ public class MemberSignupService {
     @Transactional
     public void signup(final MemberSignupRequest dto) {
         // todo 관리자 권한 리팩토링 필요
-        if (dto.roleType() == RoleType.ADMIN && !dto.adminPassword().equals("adminPassword")) {
+        if (dto.roleType() == RoleType.ADMIN && !dto.adminPassword().equals("관리자 비밀번호 1234")) {
             throw new BadRequestException(ADMIN_PASSWORD_NOT_MATCH_EXCEPTION.message);
         }
         Member member = MemberMapper.toEntity(dto, passwordEncoder);

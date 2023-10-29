@@ -1,17 +1,26 @@
 package softwar7.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import softwar7.application.jwt.JwtFacade;
+import softwar7.domain.member.persist.Member;
+import softwar7.domain.member.vo.MemberSession;
+import softwar7.repository.member.MemberRepository;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static softwar7.global.constant.LoginConstant.ACCESS_TOKEN;
+import static softwar7.global.constant.TimeConstant.ONE_HOUR;
+import static softwar7.global.constant.TimeConstant.ONE_MONTH;
 
 @AutoConfigureMockMvc
 @ExtendWith(RestDocumentationExtension.class)
@@ -20,6 +29,15 @@ public class ControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected MemberRepository memberRepository;
+
+    @Autowired
+    protected JwtFacade jwtFacade;
 
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -34,5 +52,30 @@ public class ControllerTest {
                         .withHost("localhost")
                         .withPort(8080))
                 .build();
+    }
+
+    protected String login() {
+        // given 1
+        Member member = Member.builder()
+                .username("사용자 이름")
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .build();
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // given 3
+        String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
+        String refreshToken = jwtFacade.createRefreshToken(memberSession.id(), ONE_MONTH.value);
+        jwtFacade.saveJwtRefreshToken(memberSession.id(), refreshToken);
+        jwtFacade.setHeader(response, accessToken, refreshToken);
+
+        return response.getHeader(ACCESS_TOKEN.value);
     }
 }
