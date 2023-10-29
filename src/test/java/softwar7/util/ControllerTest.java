@@ -15,6 +15,8 @@ import org.springframework.web.context.WebApplicationContext;
 import softwar7.application.jwt.JwtFacade;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
+import softwar7.domain.member.vo.RoleType;
+import softwar7.repository.channel.ChannelRepository;
 import softwar7.repository.member.MemberRepository;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -36,6 +38,9 @@ public class ControllerTest {
 
     @Autowired
     protected MemberRepository memberRepository;
+
+    @Autowired
+    protected ChannelRepository channelRepository;
 
     @Autowired
     protected JwtFacade jwtFacade;
@@ -60,8 +65,14 @@ public class ControllerTest {
 
     protected String login() {
         // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
         Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
                 .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
                 .build();
 
         memberRepository.save(member);

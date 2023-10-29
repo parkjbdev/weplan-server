@@ -215,43 +215,4 @@ class MemberControllerTest extends ControllerTest {
                                 .build()
                         )));
     }
-
-//    @Test
-//    @DisplayName("닉네임 검증을 했을 때 사용가능하면 true를 반환합니다")
-//    void validateNicknameDuplicationSuccess() throws Exception {
-//        // given
-//        MemberSignupRequest dto = MemberSignupRequest.builder()
-//                .loginId("로그인 아이디")
-//                .password("비밀번호 1234")
-//                .name("사용자 이름")
-//                .phoneNumber("01012345678")
-//                .roleType(RoleType.GUEST)
-//                .build();
-//
-//        // expected
-//        mockMvc.perform(post("/api/nickname-validation")
-//                        .header(ACCESS_TOKEN.value, accessToken)
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(dto))
-//                )
-//                .andExpect(status().isOk())
-//                .andDo(document("닉네임 검증 - 사용 가능",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        resource(ResourceSnippetParameters.builder()
-//                                .tag("회원")
-//                                .summary("닉네임 검증")
-//                                .requestHeaders(
-//                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
-//                                )
-//                                .requestFields(
-//                                        fieldWithPath("nickname").type(STRING).description("닉네임")
-//                                )
-//                                .responseFields(
-//                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
-//                                        fieldWithPath("message").type(STRING).description("사용 여부 메세지")
-//                                )
-//                                .build()
-//                        )));
-//    }
 }
