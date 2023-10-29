@@ -13,6 +13,7 @@ import softwar7.mapper.member.MemberMapper;
 import softwar7.mapper.member.dto.MemberResponse;
 import softwar7.mapper.member.dto.MemberSigninRequest;
 import softwar7.mapper.member.dto.MemberSignupRequest;
+import softwar7.mapper.member.dto.SigninResponse;
 
 @RequestMapping("/api")
 @RestController
@@ -33,9 +34,9 @@ public class MemberController {
     }
 
     @PostMapping("/api/signin")
-    public MemberResponse signin(@RequestBody @Valid final MemberSigninRequest dto,
+    public SigninResponse signin(@RequestBody @Valid final MemberSigninRequest dto,
                                  final HttpServletResponse response) {
-        Member member = memberSigninService.signin(dto, response);
-        return MemberMapper.toMemberResponse(member);
+        Boolean adminType = memberSigninService.signin(dto, response);
+        return new SigninResponse(adminType);
     }
 }

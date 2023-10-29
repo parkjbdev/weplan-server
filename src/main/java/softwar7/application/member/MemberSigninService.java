@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import softwar7.application.jwt.JwtFacade;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
+import softwar7.domain.member.vo.RoleType;
 import softwar7.global.constant.TimeConstant;
 import softwar7.mapper.member.MemberMapper;
 import softwar7.mapper.member.dto.MemberSigninRequest;
@@ -28,7 +29,7 @@ public class MemberSigninService {
         this.jwtFacade = jwtFacade;
     }
 
-    public Member signin(final MemberSigninRequest dto, final HttpServletResponse response) {
+    public Boolean signin(final MemberSigninRequest dto, final HttpServletResponse response) {
         Member member = memberRepository.getByLoginId(dto.loginId());
         String encodedPassword = member.getPassword();
 
@@ -40,6 +41,6 @@ public class MemberSigninService {
             jwtFacade.setHeader(response, accessToken, refreshToken);
         }
 
-        return member;
+        return member.getRoleType().equals(RoleType.ADMIN);
     }
 }
