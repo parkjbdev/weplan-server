@@ -6,7 +6,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -88,18 +87,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private String getRefreshToken(final HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            throw new UnAuthorizedException(COOKIE_NOT_EXIST.message);
-        }
-
-        for (Cookie cookie : cookies) {
-            if (REFRESH_TOKEN.value.equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-
-        throw new UnAuthorizedException(REFRESH_TOKEN_NOT_EXIST.message);
+        return request.getHeader(REFRESH_TOKEN.value);
     }
 
     private MemberSession getMemberSessionFromRefreshToken(final String refreshToken) {
