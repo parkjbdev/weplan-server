@@ -7,7 +7,10 @@ import softwar7.domain.channel.Channel;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.channel.dto.ChannelResponse;
+import softwar7.mapper.channel.dto.ChannelResponses;
 import softwar7.mapper.channel.dto.ChannelSaveRequest;
+
+import java.util.List;
 
 @RequestMapping("/api")
 @RestController
@@ -31,5 +34,11 @@ public class ChannelController {
     @GetMapping("/admin/channels/{channelId}")
     public ChannelResponse getChannel(@PathVariable final long channelId) {
         return channelFindService.findChannel(channelId);
+    }
+
+    @GetMapping("/admin/channels")
+    public ChannelResponses getChannels() {
+        List<ChannelResponse> channelResponses = channelFindService.findAll();
+        return new ChannelResponses(channelResponses);
     }
 }

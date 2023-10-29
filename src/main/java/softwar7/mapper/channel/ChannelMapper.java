@@ -4,6 +4,8 @@ import softwar7.domain.channel.Channel;
 import softwar7.mapper.channel.dto.ChannelResponse;
 import softwar7.mapper.channel.dto.ChannelSaveRequest;
 
+import java.util.List;
+
 public enum ChannelMapper {
 
     ChannelMapper(){

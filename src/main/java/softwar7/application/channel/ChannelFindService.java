@@ -9,6 +9,9 @@ import softwar7.mapper.channel.dto.ChannelResponse;
 import softwar7.repository.channel.ChannelRepository;
 import softwar7.repository.member.MemberRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ChannelFindService {
 
@@ -25,5 +28,19 @@ public class ChannelFindService {
         Channel channel = channelRepository.getById(channelId);
         Member member = memberRepository.getById(channel.getMemberId());
         return ChannelMapper.toChannelResponse(channel, member.getUsername());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChannelResponse> findAll() {
+        List<Channel> channels = channelRepository.findAll();
+
+        List<ChannelResponse> channelResponses = new ArrayList<>();
+        for (Channel channel : channels) {
+            Member member = memberRepository.getById(channel.getMemberId());
+            ChannelResponse channelResponse = ChannelMapper.toChannelResponse(channel, member.getUsername());
+            channelResponses.add(channelResponse);
+        }
+
+        return channelResponses;
     }
 }
