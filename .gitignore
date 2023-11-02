@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 application-prod.yml
+DummyData.java
 
 ### STS ###
 .apt_generated

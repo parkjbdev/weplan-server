@@ -5,6 +5,9 @@ import softwar7.domain.schedule.persist.Schedule;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum ScheduleMapper {
 
     ScheduleMapper() {
@@ -32,5 +35,15 @@ public enum ScheduleMapper {
                 .channelId(schedule.getChannelId())
                 .approval(schedule.getApproval())
                 .build();
+    }
+
+    public static List<ScheduleResponse> toResponses(final List<Schedule> schedules) {
+        List<ScheduleResponse> responses = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            ScheduleResponse response = toResponse(schedule);
+            responses.add(response);
+        }
+
+        return responses;
     }
 }

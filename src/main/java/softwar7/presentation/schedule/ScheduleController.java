@@ -8,7 +8,11 @@ import softwar7.domain.schedule.persist.Schedule;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.shedule.ScheduleMapper;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
+import softwar7.mapper.shedule.dto.ScheduleResult;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RequestMapping("/api")
 @RestController
@@ -30,8 +34,16 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedules/{scheduleId}")
-    public ScheduleResponse getSchedules(@PathVariable final long scheduleId) {
+    public ScheduleResponse getSchedule(@PathVariable final long scheduleId) {
         Schedule schedule = scheduleFindService.getById(scheduleId);
         return ScheduleMapper.toResponse(schedule);
+    }
+
+    @GetMapping("/schedules")
+    public ScheduleResult getSchedules(@RequestParam final LocalDate start,
+                                       @RequestParam final LocalDate end,
+                                       @RequestParam final long channelId) {
+        List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllSchedulesByDate(start, end, channelId);
+        return new ScheduleResult(scheduleResponses);
     }
 }
