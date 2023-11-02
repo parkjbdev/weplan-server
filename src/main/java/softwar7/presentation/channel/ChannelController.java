@@ -31,12 +31,12 @@ public class ChannelController {
         channelCreateService.createChannel(memberSession.id(), dto);
     }
 
-    @GetMapping("/admin/channels/{channelId}")
+    @GetMapping("/channels/{channelId}")
     public ChannelResponse getChannel(@PathVariable final long channelId) {
         return channelFindService.findChannel(channelId);
     }
 
-    @GetMapping("/admin/channels")
+    @GetMapping("/channels")
     public ChannelResponses getChannels() {
         List<ChannelResponse> channelResponses = channelFindService.findAll();
         return new ChannelResponses(channelResponses);

@@ -4,6 +4,7 @@ public enum ExceptionMessage {
 
     MEMBER_NOT_FOUND_EXCEPTION("회원을 찾을 수 없습니다"),
     CHANNEL_NOT_FOUND_EXCEPTION("채널을 찾을 수 없습니다"),
+    SCHEDULE_NOT_FOUND_EXCEPTION("스케줄을 찾을 수 없습니다"),
     NICKNAME_DUPLICATE_EXCEPTION("이미 존재하는 닉네임입니다"),
     REFRESH_TOKEN_NOT_FOUND_EXCEPTION("RefreshToken을 찾을 수 없습니다"),
     ALBUM_IMAGE_NOT_FOUND_EXCEPTION("앨범 이미지를 찾을 수 없습니다"),

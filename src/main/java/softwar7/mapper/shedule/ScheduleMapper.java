@@ -2,6 +2,7 @@ package softwar7.mapper.shedule;
 
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
 
 public enum ScheduleMapper {
@@ -18,6 +19,17 @@ public enum ScheduleMapper {
                 .content(dto.content())
                 .startTime(dto.start())
                 .endTime(dto.end())
+                .build();
+    }
+
+    public static ScheduleResponse toResponse(final Schedule schedule) {
+        return ScheduleResponse.builder()
+                .id(schedule.getId())
+                .name(schedule.getScheduleName())
+                .content(schedule.getContent())
+                .start(schedule.getStartTime())
+                .end(schedule.getEndTime())
+                .channelId(schedule.getChannelId())
                 .build();
     }
 }

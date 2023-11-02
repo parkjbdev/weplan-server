@@ -3,7 +3,6 @@ package softwar7.presentation.channel;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletResponse;
 import softwar7.domain.channel.Channel;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
@@ -96,7 +95,7 @@ class ChannelControllerTest extends ControllerTest {
         channelRepository.save(channel);
 
         // expected
-        mockMvc.perform(get("/api/admin/channels/{channelId}", channel.getId())
+        mockMvc.perform(get("/api/channels/{channelId}", channel.getId())
                         .header(ACCESS_TOKEN.value, accessToken)
                 )
                 .andExpect(status().isOk())
@@ -169,7 +168,7 @@ class ChannelControllerTest extends ControllerTest {
         channelRepository.save(channel3);
 
         // expected
-        mockMvc.perform(get("/api/admin/channels")
+        mockMvc.perform(get("/api/channels")
                         .header(ACCESS_TOKEN.value, accessToken)
                 )
                 .andExpect(status().isOk())
