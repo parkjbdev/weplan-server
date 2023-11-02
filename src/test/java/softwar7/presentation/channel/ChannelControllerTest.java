@@ -84,7 +84,7 @@ class ChannelControllerTest extends ControllerTest {
                 .username("사용자 이름")
                 .build();
 
-        String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
 
         Channel channel = Channel.builder()
                 .memberId(member.getId())
@@ -143,7 +143,7 @@ class ChannelControllerTest extends ControllerTest {
                 .username("사용자 이름")
                 .build();
 
-        String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
 
         Channel channel1 = Channel.builder()
                 .memberId(member.getId())

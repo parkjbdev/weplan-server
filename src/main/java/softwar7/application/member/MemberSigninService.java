@@ -3,12 +3,10 @@ package softwar7.application.member;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import softwar7.application.jwt.JwtFacade;
+import softwar7.application.jwt.JwtManager;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
-import softwar7.global.constant.ExceptionMessage;
-import softwar7.global.constant.TimeConstant;
 import softwar7.global.exception.BadRequestException;
 import softwar7.mapper.member.MemberMapper;
 import softwar7.mapper.member.dto.MemberSigninRequest;
@@ -23,13 +21,13 @@ public class MemberSigninService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtFacade jwtFacade;
+    private final JwtManager jwtManager;
 
     public MemberSigninService(final MemberRepository memberRepository,
-                               final PasswordEncoder passwordEncoder, final JwtFacade jwtFacade) {
+                               final PasswordEncoder passwordEncoder, final JwtManager jwtManager) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtFacade = jwtFacade;
+        this.jwtManager = jwtManager;
     }
 
     public Boolean signin(final MemberSigninRequest dto, final HttpServletResponse response) {
@@ -38,10 +36,10 @@ public class MemberSigninService {
 
         if (passwordEncoder.matches(dto.password(), encodedPassword)) {
             MemberSession memberSession = MemberMapper.toMemberSession(member);
-            String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
-            String refreshToken = jwtFacade.createRefreshToken(memberSession.id(), ONE_MONTH.value);
-            jwtFacade.saveJwtRefreshToken(memberSession.id(), refreshToken);
-            jwtFacade.setHeader(response, accessToken, refreshToken);
+            String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+            String refreshToken = jwtManager.createRefreshToken(memberSession.id(), ONE_MONTH.value);
+            jwtManager.saveJwtRefreshToken(memberSession.id(), refreshToken);
+            jwtManager.setHeader(response, accessToken, refreshToken);
 
             return member.getRoleType().equals(RoleType.ADMIN);
         }

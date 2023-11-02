@@ -11,14 +11,14 @@ import softwar7.repository.jwt.JwtRefreshTokenRepository;
 import java.util.Optional;
 
 @Service
-public class JwtFacade {
+public class JwtManager {
 
     private final JwtCreateTokenService jwtCreateTokenService;
     private final SetHeaderService setHeaderService;
     private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
 
-    public JwtFacade(final JwtCreateTokenService jwtCreateTokenService, final SetHeaderService setHeaderService,
-                     final JwtRefreshTokenRepository jwtRefreshTokenRepository) {
+    public JwtManager(final JwtCreateTokenService jwtCreateTokenService, final SetHeaderService setHeaderService,
+                      final JwtRefreshTokenRepository jwtRefreshTokenRepository) {
         this.jwtCreateTokenService = jwtCreateTokenService;
         this.setHeaderService = setHeaderService;
         this.jwtRefreshTokenRepository = jwtRefreshTokenRepository;

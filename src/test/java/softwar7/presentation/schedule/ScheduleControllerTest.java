@@ -15,6 +15,7 @@ import softwar7.util.ControllerTest;
 
 import java.time.LocalDateTime;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -53,7 +54,7 @@ class ScheduleControllerTest extends ControllerTest {
                 .username("사용자 이름")
                 .build();
 
-        String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
 
         Channel channel = Channel.builder()
                 .memberId(member.getId())
@@ -121,7 +122,7 @@ class ScheduleControllerTest extends ControllerTest {
                 .username("사용자 이름")
                 .build();
 
-        String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
 
         Channel channel = Channel.builder()
                 .memberId(member.getId())
@@ -168,5 +169,108 @@ class ScheduleControllerTest extends ControllerTest {
                                 )
                                 .build()
                         )));
+    }
+
+    @Test
+    @DisplayName("일정에 맞는 스케줄 조회에 성공합니다")
+    void getSchedules() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        createSchedules(member, channel);
+        String channelId = String.valueOf(channel.getId());
+
+        // expected
+        mockMvc.perform(get("/api/schedules")
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .param("start", "2023-10-10")
+                        .param("end", "2023-10-12")
+                        .param("channelId", channelId))
+                .andExpect(status().isOk())
+                .andDo(document("해당 일정의 스케줄 조회",
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("스케줄")
+                                .summary("해당 일정의 스케줄 조회")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .responseFields(
+                                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
+                                        fieldWithPath("schedules[].content").type(STRING).description("스케줄 이름"),
+                                        fieldWithPath("schedules[].start").type(STRING).description("시작 시간"),
+                                        fieldWithPath("schedules[].end").type(STRING).description("종료 시간"),
+                                        fieldWithPath("schedules[].channelId").type(NUMBER).description("채널 ID"),
+                                        fieldWithPath("schedules[].approval").type(STRING).description("승인 여부")
+                                )
+                                .build()
+                        )));
+    }
+
+    private void createSchedules(final Member member, final Channel channel) {
+        Schedule schedule1 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명1")
+                .content("스케줄 내용1")
+                .startTime(LocalDateTime.of(2023, 10, 10, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 10, 11, 0))
+                .approval(Approval.APPROVED)
+                .build();
+
+        Schedule schedule2 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명2")
+                .content("스케줄 내용2")
+                .startTime(LocalDateTime.of(2023, 10, 11, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 11, 11, 0))
+                .approval(Approval.APPROVED)
+                .build();
+
+        Schedule schedule3 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명3")
+                .content("스케줄 내용3")
+                .startTime(LocalDateTime.of(2023, 10, 12, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 12, 11, 0))
+                .approval(Approval.APPROVED)
+                .build();
+
+        scheduleRepository.save(schedule1);
+        scheduleRepository.save(schedule2);
+        scheduleRepository.save(schedule3);
     }
 }

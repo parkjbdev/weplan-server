@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import softwar7.application.jwt.JwtFacade;
+import softwar7.application.jwt.JwtManager;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
@@ -47,7 +47,7 @@ public class ControllerTest {
     protected ScheduleRepository scheduleRepository;
 
     @Autowired
-    protected JwtFacade jwtFacade;
+    protected JwtManager jwtManager;
 
     @Autowired
     protected PasswordEncoder passwordEncoder;
@@ -90,10 +90,10 @@ public class ControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // given 3
-        String accessToken = jwtFacade.createAccessToken(memberSession, ONE_HOUR.value);
-        String refreshToken = jwtFacade.createRefreshToken(memberSession.id(), ONE_MONTH.value);
-        jwtFacade.saveJwtRefreshToken(memberSession.id(), refreshToken);
-        jwtFacade.setHeader(response, accessToken, refreshToken);
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+        String refreshToken = jwtManager.createRefreshToken(memberSession.id(), ONE_MONTH.value);
+        jwtManager.saveJwtRefreshToken(memberSession.id(), refreshToken);
+        jwtManager.setHeader(response, accessToken, refreshToken);
 
         return response.getHeader(ACCESS_TOKEN.value);
     }
