@@ -18,6 +18,7 @@ import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
 import softwar7.repository.channel.ChannelRepository;
 import softwar7.repository.member.MemberRepository;
+import softwar7.repository.schedule.ScheduleRepository;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -41,6 +42,9 @@ public class ControllerTest {
 
     @Autowired
     protected ChannelRepository channelRepository;
+
+    @Autowired
+    protected ScheduleRepository scheduleRepository;
 
     @Autowired
     protected JwtFacade jwtFacade;

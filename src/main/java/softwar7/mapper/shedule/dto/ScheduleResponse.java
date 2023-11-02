@@ -1,6 +1,7 @@
 package softwar7.mapper.shedule.dto;
 
 import lombok.Builder;
+import softwar7.domain.schedule.vo.Approval;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,7 @@ public record ScheduleResponse(
         String content,
         LocalDateTime start,
         LocalDateTime end,
-        long channelId
+        long channelId,
+        Approval approval
 ) {
 }

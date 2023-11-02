@@ -30,6 +30,7 @@ public enum ScheduleMapper {
                 .start(schedule.getStartTime())
                 .end(schedule.getEndTime())
                 .channelId(schedule.getChannelId())
+                .approval(schedule.getApproval())
                 .build();
     }
 }
