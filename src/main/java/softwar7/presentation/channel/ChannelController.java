@@ -5,6 +5,7 @@ import softwar7.application.channel.ChannelCreateService;
 import softwar7.application.channel.ChannelFindService;
 import softwar7.domain.channel.Channel;
 import softwar7.domain.member.vo.MemberSession;
+import softwar7.global.annotation.AdminLogin;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.channel.dto.ChannelResponse;
 import softwar7.mapper.channel.dto.ChannelResponses;
@@ -26,18 +27,19 @@ public class ChannelController {
     }
 
     @PostMapping("/admin/channels")
-    public void createChannel(@Login final MemberSession memberSession,
+    public void createChannel(@AdminLogin final MemberSession memberSession,
                               @RequestBody final ChannelSaveRequest dto) {
         channelCreateService.createChannel(memberSession.id(), dto);
     }
 
     @GetMapping("/channels/{channelId}")
-    public ChannelResponse getChannel(@PathVariable final long channelId) {
+    public ChannelResponse getChannel(@Login final MemberSession memberSession,
+                                      @PathVariable final long channelId) {
         return channelFindService.findChannel(channelId);
     }
 
     @GetMapping("/channels")
-    public ChannelResponses getChannels() {
+    public ChannelResponses getChannels(@Login final MemberSession memberSession) {
         List<ChannelResponse> channelResponses = channelFindService.findAll();
         return new ChannelResponses(channelResponses);
     }

@@ -15,6 +15,7 @@ public enum MemberMapper {
         return MemberSession.builder()
                 .id(member.getId())
                 .username(member.getUsername())
+                .roleType(member.getRoleType())
                 .build();
     }
 

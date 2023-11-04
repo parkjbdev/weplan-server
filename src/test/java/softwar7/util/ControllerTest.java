@@ -85,6 +85,7 @@ public class ControllerTest {
         MemberSession memberSession = MemberSession.builder()
                 .id(member.getId())
                 .username("사용자 이름")
+                .roleType(member.getRoleType())
                 .build();
 
         MockHttpServletResponse response = new MockHttpServletResponse();

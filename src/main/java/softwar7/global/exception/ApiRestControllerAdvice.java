@@ -34,6 +34,13 @@ public class ApiRestControllerAdvice {
         return new ExceptionResponse(e.getStatusCode(), e.getMessage());
     }
 
+    // 403
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenException.class)
+    public ExceptionResponse handleException(final ForbiddenException e) {
+        return new ExceptionResponse(e.getStatusCode(), e.getMessage());
+    }
+
     // 404
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
