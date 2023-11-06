@@ -45,6 +45,7 @@ public class ScheduleRepository {
                         schedule.channelId.eq(channelId)
                                 .and(schedule.startTime.after(startDateTime))
                                 .and(schedule.endTime.before(endDateTime))
+                                .and(schedule.approval.eq(Approval.APPROVED))
                 )
                 .fetch();
     }

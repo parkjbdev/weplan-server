@@ -52,4 +52,8 @@ public class Schedule extends BaseTimeEntity {
         this.endTime = endTime;
         this.approval = approval;
     }
+
+    public void updateApproval(final Approval updateApproval) {
+        this.approval = updateApproval;
+    }
 }

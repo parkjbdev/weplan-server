@@ -1,6 +1,7 @@
 package softwar7.presentation.schedule;
 
 import org.springframework.web.bind.annotation.*;
+import softwar7.application.schedule.ScheduleApproveService;
 import softwar7.application.schedule.ScheduleCreateService;
 import softwar7.application.schedule.ScheduleFindService;
 import softwar7.domain.member.vo.MemberSession;
@@ -8,6 +9,7 @@ import softwar7.domain.schedule.persist.Schedule;
 import softwar7.global.annotation.AdminLogin;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.shedule.ScheduleMapper;
+import softwar7.mapper.shedule.dto.ScheduleApproveRequest;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.mapper.shedule.dto.ScheduleResult;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
@@ -21,11 +23,14 @@ public class ScheduleController {
 
     private final ScheduleCreateService scheduleCreateService;
     private final ScheduleFindService scheduleFindService;
+    private final ScheduleApproveService scheduleApproveService;
 
     public ScheduleController(final ScheduleCreateService scheduleCreateService,
-                              final ScheduleFindService scheduleFindService) {
+                              final ScheduleFindService scheduleFindService,
+                              final ScheduleApproveService scheduleApproveService) {
         this.scheduleCreateService = scheduleCreateService;
         this.scheduleFindService = scheduleFindService;
+        this.scheduleApproveService = scheduleApproveService;
     }
 
     @PostMapping("/schedules")
@@ -51,8 +56,14 @@ public class ScheduleController {
     }
 
     @GetMapping("/admin/schedules/requests")
-    public ScheduleResult request(@AdminLogin final MemberSession memberSession) {
+    public ScheduleResult findPendingSchedules(@AdminLogin final MemberSession memberSession) {
         List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllRequestSchedules();
         return new ScheduleResult(scheduleResponses);
+    }
+
+    @PostMapping("/admin/schedules/requests")
+    public void approveSchedule(@AdminLogin final MemberSession memberSession,
+                                @RequestBody final ScheduleApproveRequest dto) {
+        scheduleApproveService.approveSchedule(dto);
     }
 }

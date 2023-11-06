@@ -159,7 +159,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .responseFields(
-                                        fieldWithPath("id").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("scheduleId").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("name").type(STRING).description("스케줄명"),
                                         fieldWithPath("content").type(STRING).description("스케줄 이름"),
                                         fieldWithPath("start").type(STRING).description("시작 시간"),
@@ -223,7 +223,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .responseFields(
-                                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("schedules[].scheduleId").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
                                         fieldWithPath("schedules[].content").type(STRING).description("스케줄 이름"),
                                         fieldWithPath("schedules[].start").type(STRING).description("시작 시간"),
@@ -269,7 +269,7 @@ class ScheduleControllerTest extends ControllerTest {
         channelRepository.save(channel);
 
         // given 3
-        createSchedules(member, channel);
+        createPendingSchedules(member, channel);
 
         // expected
         mockMvc.perform(get("/api/admin/schedules/requests")
@@ -284,7 +284,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .responseFields(
-                                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("schedules[].scheduleId").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
                                         fieldWithPath("schedules[].content").type(STRING).description("스케줄 이름"),
                                         fieldWithPath("schedules[].start").type(STRING).description("시작 시간"),
@@ -297,6 +297,45 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     private void createSchedules(final Member member, final Channel channel) {
+        Schedule schedule1 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명1")
+                .content("스케줄 내용1")
+                .startTime(LocalDateTime.of(2023, 10, 10, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 10, 11, 0))
+                .approval(Approval.APPROVED)
+                .build();
+
+        Schedule schedule2 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명2")
+                .content("스케줄 내용2")
+                .startTime(LocalDateTime.of(2023, 10, 11, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 11, 11, 0))
+                .approval(Approval.APPROVED)
+                .build();
+
+        Schedule schedule3 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명3")
+                .content("스케줄 내용3")
+                .startTime(LocalDateTime.of(2023, 10, 12, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 12, 11, 0))
+                .approval(Approval.APPROVED)
+                .build();
+
+        scheduleRepository.save(schedule1);
+        scheduleRepository.save(schedule2);
+        scheduleRepository.save(schedule3);
+    }
+
+    private void createPendingSchedules(final Member member, final Channel channel) {
         Schedule schedule1 = Schedule.builder()
                 .memberId(member.getId())
                 .channelId(channel.getId())
