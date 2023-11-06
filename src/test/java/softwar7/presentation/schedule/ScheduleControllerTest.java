@@ -10,6 +10,7 @@ import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
 import softwar7.domain.schedule.persist.Schedule;
 import softwar7.domain.schedule.vo.Approval;
+import softwar7.mapper.shedule.dto.ScheduleApproveRequest;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
 import softwar7.util.ControllerTest;
 
@@ -295,6 +296,77 @@ class ScheduleControllerTest extends ControllerTest {
                                 .build()
                         )));
     }
+
+    @Test
+    @DisplayName("스케줄 등록을 요청한 스케줄을 승인합니다")
+    void approveRequestSchedules() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        Schedule schedule = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명3")
+                .content("스케줄 내용3")
+                .startTime(LocalDateTime.of(2023, 10, 12, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 12, 11, 0))
+                .approval(Approval.PENDING)
+                .build();
+
+        scheduleRepository.save(schedule);
+        ScheduleApproveRequest dto = new ScheduleApproveRequest(schedule.getId(), Approval.APPROVED);
+
+        // expected
+        mockMvc.perform(post("/api/admin/schedules/requests")
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(document("스케줄 등록 요청 승인",
+                        preprocessRequest(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("스케줄")
+                                .summary("스케줄 등록 요청 승인")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .requestFields(
+                                        fieldWithPath("scheduleId").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("approval").type(STRING).description("승인 여부")
+                                )
+                                .build()
+                        )));
+    }
+
 
     private void createSchedules(final Member member, final Channel channel) {
         Schedule schedule1 = Schedule.builder()
