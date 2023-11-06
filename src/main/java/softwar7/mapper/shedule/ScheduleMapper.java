@@ -29,7 +29,7 @@ public enum ScheduleMapper {
 
     public static ScheduleResponse toResponse(final Schedule schedule) {
         return ScheduleResponse.builder()
-                .scheduleId(schedule.getId())
+                .id(schedule.getId())
                 .name(schedule.getScheduleName())
                 .content(schedule.getContent())
                 .start(schedule.getStartTime())

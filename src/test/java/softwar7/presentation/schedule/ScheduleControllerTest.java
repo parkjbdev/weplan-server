@@ -160,7 +160,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .responseFields(
-                                        fieldWithPath("scheduleId").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("id").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("name").type(STRING).description("스케줄명"),
                                         fieldWithPath("content").type(STRING).description("스케줄 이름"),
                                         fieldWithPath("start").type(STRING).description("시작 시간"),
@@ -224,7 +224,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .responseFields(
-                                        fieldWithPath("schedules[].scheduleId").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
                                         fieldWithPath("schedules[].content").type(STRING).description("스케줄 이름"),
                                         fieldWithPath("schedules[].start").type(STRING).description("시작 시간"),
@@ -285,7 +285,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .responseFields(
-                                        fieldWithPath("schedules[].scheduleId").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
                                         fieldWithPath("schedules[].content").type(STRING).description("스케줄 이름"),
                                         fieldWithPath("schedules[].start").type(STRING).description("시작 시간"),
@@ -360,7 +360,7 @@ class ScheduleControllerTest extends ControllerTest {
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
                                 .requestFields(
-                                        fieldWithPath("scheduleId").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("id").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("approval").type(STRING).description("승인 여부")
                                 )
                                 .build()

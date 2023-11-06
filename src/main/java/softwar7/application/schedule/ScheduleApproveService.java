@@ -17,7 +17,7 @@ public class ScheduleApproveService {
 
     @Transactional
     public void approveSchedule(final ScheduleApproveRequest dto) {
-        Schedule schedule = scheduleRepository.getById(dto.scheduleId());
+        Schedule schedule = scheduleRepository.getById(dto.id());
         schedule.updateApproval(dto.approval());
     }
 }

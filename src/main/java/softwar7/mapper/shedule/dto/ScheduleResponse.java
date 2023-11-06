@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record ScheduleResponse(
-        long scheduleId,
+        long id,
         String name,
         String content,
         LocalDateTime start,
