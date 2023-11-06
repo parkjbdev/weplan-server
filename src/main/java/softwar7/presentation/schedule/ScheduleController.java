@@ -5,6 +5,7 @@ import softwar7.application.schedule.ScheduleCreateService;
 import softwar7.application.schedule.ScheduleFindService;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.global.annotation.AdminLogin;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.shedule.ScheduleMapper;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
@@ -46,6 +47,12 @@ public class ScheduleController {
                                        @RequestParam final LocalDate end,
                                        @RequestParam final long channelId) {
         List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllSchedulesByDate(start, end, channelId);
+        return new ScheduleResult(scheduleResponses);
+    }
+
+    @GetMapping("/admin/schedules/requests")
+    public ScheduleResult request(@AdminLogin final MemberSession memberSession) {
+        List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllRequestSchedules();
         return new ScheduleResult(scheduleResponses);
     }
 }

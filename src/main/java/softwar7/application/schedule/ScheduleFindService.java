@@ -30,4 +30,10 @@ public class ScheduleFindService {
         List<Schedule> schedules = scheduleRepository.findAllSchedulesByDate(start, end, channelId);
         return ScheduleMapper.toResponses(schedules);
     }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponse> findAllRequestSchedules() {
+        List<Schedule> schedules = scheduleRepository.findAllRequestSchedules();
+        return ScheduleMapper.toResponses(schedules);
+    }
 }

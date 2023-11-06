@@ -2,6 +2,7 @@ package softwar7.mapper.shedule;
 
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.domain.schedule.vo.Approval;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
 
@@ -22,6 +23,7 @@ public enum ScheduleMapper {
                 .content(dto.content())
                 .startTime(dto.start())
                 .endTime(dto.end())
+                .approval(Approval.PENDING)
                 .build();
     }
 

@@ -2,7 +2,9 @@ package softwar7.repository.schedule;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
+import softwar7.domain.schedule.persist.QSchedule;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.domain.schedule.vo.Approval;
 import softwar7.global.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -44,6 +46,12 @@ public class ScheduleRepository {
                                 .and(schedule.startTime.after(startDateTime))
                                 .and(schedule.endTime.before(endDateTime))
                 )
+                .fetch();
+    }
+
+    public List<Schedule> findAllRequestSchedules() {
+        return queryFactory.selectFrom(schedule)
+                .where(schedule.approval.eq(Approval.PENDING))
                 .fetch();
     }
 }
