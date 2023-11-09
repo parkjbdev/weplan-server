@@ -1,0 +1,23 @@
+### 회원가입
+
+POST http://localhost:8080/api/signup
+Content-Type: application/json
+
+{
+    "loginId" : "testId",
+    "password" : "password1234",
+    "name" : "name",
+    "phoneNumber" : "01012345678",
+    "adminPassword" : "관리자 비밀번호 1234",
+    "roleType" : "ADMIN"
+}
+
+### 로그인
+
+POST http://localhost:8080/api/signin
+Content-Type: application/json
+
+{
+  "loginId" : "testId",
+  "password" : "password1234"
+}

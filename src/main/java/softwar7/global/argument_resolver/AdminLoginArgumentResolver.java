@@ -7,18 +7,18 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import softwar7.application.jwt.JwtCreateTokenService;
 import softwar7.domain.jwt.JwtRefreshToken;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
 import softwar7.global.annotation.AdminLogin;
-import softwar7.global.annotation.Login;
-import softwar7.global.constant.ExceptionMessage;
 import softwar7.global.exception.ForbiddenException;
 import softwar7.global.exception.UnAuthorizedException;
 import softwar7.mapper.member.MemberMapper;
@@ -32,6 +32,7 @@ import static softwar7.global.constant.ExceptionMessage.REFRESH_TOKEN_NOT_VALID;
 import static softwar7.global.constant.JwtKey.JWT_KEY;
 import static softwar7.global.constant.LoginConstant.ACCESS_TOKEN;
 import static softwar7.global.constant.LoginConstant.REFRESH_TOKEN;
+import static softwar7.global.constant.TimeConstant.ONE_HOUR;
 
 public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -40,13 +41,16 @@ public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
     private final JwtRefreshTokenRepository jwtRefreshTokenRepository;
+    private final JwtCreateTokenService jwtCreateTokenService;
 
     public AdminLoginArgumentResolver(final ObjectMapper objectMapper,
-                                 final MemberRepository memberRepository,
-                                 final JwtRefreshTokenRepository jwtRefreshTokenRepository) {
+                                      final MemberRepository memberRepository,
+                                      final JwtRefreshTokenRepository jwtRefreshTokenRepository,
+                                      final JwtCreateTokenService jwtCreateTokenService) {
         this.objectMapper = objectMapper;
         this.memberRepository = memberRepository;
         this.jwtRefreshTokenRepository = jwtRefreshTokenRepository;
+        this.jwtCreateTokenService = jwtCreateTokenService;
     }
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
@@ -59,8 +63,9 @@ public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
                                   final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory)  {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        HttpServletResponse response = (HttpServletResponse) webRequest.getNativeResponse();
         String accessToken = request.getHeader(ACCESS_TOKEN.value);
-        MemberSession memberSession = getMemberSessionFromToken(accessToken, request);
+        MemberSession memberSession = getMemberSessionFromToken(accessToken, request, response);
         if (memberSession.roleType() != RoleType.ADMIN) {
             throw new ForbiddenException(ADMIN_FORBIDDEN_EXCEPTION.message);
         }
@@ -68,7 +73,8 @@ public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver
     }
 
     private MemberSession getMemberSessionFromToken(final String accessToken,
-                                                    final HttpServletRequest request) {
+                                                    final HttpServletRequest request,
+                                                    final HttpServletResponse response) {
         // AccessToken payload에 MemberSession 객체 정보가 저장되어 있음 -> json 파싱 필요
         try {
             Jws<Claims> claims = getClaims(accessToken);
@@ -81,7 +87,7 @@ public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver
 
         } catch (JwtException e) {
             String refreshToken = getRefreshToken(request);
-            return getMemberSessionFromRefreshToken(refreshToken);
+            return getMemberSessionFromRefreshToken(refreshToken, response);
         }
     }
 
@@ -100,14 +106,18 @@ public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver
         return request.getHeader(REFRESH_TOKEN.value);
     }
 
-    private MemberSession getMemberSessionFromRefreshToken(final String refreshToken) {
+    private MemberSession getMemberSessionFromRefreshToken(final String refreshToken,
+                                                           final HttpServletResponse response) {
         try {
             Jws<Claims> claims = getClaims(refreshToken);
             String memberId = claims.getBody().getSubject();
             JwtRefreshToken jwtRefreshToken = jwtRefreshTokenRepository.getByMemberId(Long.parseLong(memberId));
             if (refreshToken.equals(jwtRefreshToken.getRefreshToken())) {
                 Member member = memberRepository.getById(Long.parseLong(memberId));
-                return MemberMapper.toMemberSession(member);
+                MemberSession memberSession = MemberMapper.toMemberSession(member);
+                String accessToken = jwtCreateTokenService.createAccessToken(memberSession, ONE_HOUR.value);
+                response.setHeader(ACCESS_TOKEN.value, accessToken);
+                return memberSession;
             }
 
             throw new UnAuthorizedException(REFRESH_TOKEN_NOT_MATCH.message);
