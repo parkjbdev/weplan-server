@@ -32,6 +32,14 @@ public class MemberRepository {
                 .orElseThrow(() -> new NotFoundException(MEMBER_NOT_FOUND_EXCEPTION.message));
     }
 
+    public Optional<Member> findByLoginId(final String loginId) {
+        return memberJpaRepository.findByLoginId(loginId);
+    }
+
+    public Optional<Member> findByPhoneNumber(final String phoneNumber) {
+        return memberJpaRepository.findByPhoneNumber(phoneNumber);
+    }
+
     public long count() {
         return memberJpaRepository.count();
     }

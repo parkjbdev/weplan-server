@@ -10,7 +10,9 @@ import softwar7.mapper.member.MemberMapper;
 import softwar7.mapper.member.dto.MemberSignupRequest;
 import softwar7.repository.member.MemberRepository;
 
-import static softwar7.global.constant.ExceptionMessage.ADMIN_PASSWORD_NOT_MATCH_EXCEPTION;
+import java.util.Optional;
+
+import static softwar7.global.constant.ExceptionMessage.*;
 
 @Service
 public class MemberSignupService {
@@ -29,7 +31,22 @@ public class MemberSignupService {
         if (dto.roleType() == RoleType.ADMIN && !dto.adminPassword().equals("관리자 비밀번호 1234")) {
             throw new BadRequestException(ADMIN_PASSWORD_NOT_MATCH_EXCEPTION.message);
         }
+
+        validateDuplication(dto);
         Member member = MemberMapper.toEntity(dto, passwordEncoder);
         memberRepository.save(member);
+    }
+
+    private void validateDuplication(final MemberSignupRequest dto) {
+        Optional<Member> byLoginId = memberRepository.findByLoginId(dto.loginId());
+        Optional<Member> byPhoneNumber = memberRepository.findByPhoneNumber(dto.phoneNumber());
+
+        if (byLoginId.isPresent()) {
+            throw new BadRequestException(LOGIN_ID_DUPLICATE_EXCEPTION.message);
+        }
+
+        if (byPhoneNumber.isPresent()) {
+            throw new BadRequestException(PHONE_NUMBER_DUPLICATE_EXCEPTION.message);
+        }
     }
 }
