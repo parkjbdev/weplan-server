@@ -1,5 +1,6 @@
 package softwar7.presentation.schedule;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import softwar7.application.schedule.ScheduleApproveService;
 import softwar7.application.schedule.ScheduleCreateService;
@@ -48,9 +49,12 @@ public class ScheduleController {
 
     @GetMapping("/schedules")
     public ScheduleResult getSchedules(@Login final MemberSession memberSession,
-                                       @RequestParam final LocalDate start,
-                                       @RequestParam final LocalDate end,
-                                       @RequestParam final long channelId) {
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate start,
+                                       @RequestParam(required = false)
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate end,
+                                       @RequestParam(required = false) final long channelId
+    ) {
         List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllSchedulesByDate(start, end, channelId);
         return new ScheduleResult(scheduleResponses);
     }

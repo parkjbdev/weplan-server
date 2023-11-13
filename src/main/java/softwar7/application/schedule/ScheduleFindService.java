@@ -27,7 +27,13 @@ public class ScheduleFindService {
     @Transactional(readOnly = true)
     public List<ScheduleResponse> findAllSchedulesByDate(final LocalDate start, final LocalDate end,
                                                          final long channelId) {
-        List<Schedule> schedules = scheduleRepository.findAllSchedulesByDate(start, end, channelId);
+        List<Schedule> schedules;
+        if (start != null && end != null) {
+            schedules = scheduleRepository.findAllSchedulesByDate(start, end, channelId);
+            return ScheduleMapper.toResponses(schedules);
+        }
+
+        schedules = scheduleRepository.findAllByChannelId(channelId);
         return ScheduleMapper.toResponses(schedules);
     }
 

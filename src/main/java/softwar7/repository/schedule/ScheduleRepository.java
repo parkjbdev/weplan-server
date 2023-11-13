@@ -50,6 +50,15 @@ public class ScheduleRepository {
                 .fetch();
     }
 
+    public List<Schedule> findAllByChannelId(final long channelId) {
+        return queryFactory.selectFrom(schedule)
+                .where(
+                        schedule.channelId.eq(channelId)
+                                .and(schedule.approval.eq(Approval.APPROVED))
+                )
+                .fetch();
+    }
+
     public List<Schedule> findAllRequestSchedules() {
         return queryFactory.selectFrom(schedule)
                 .where(schedule.approval.eq(Approval.PENDING))
