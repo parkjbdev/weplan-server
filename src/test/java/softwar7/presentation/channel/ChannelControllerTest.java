@@ -95,7 +95,7 @@ class ChannelControllerTest extends ControllerTest {
         channelRepository.save(channel);
 
         // expected
-        mockMvc.perform(get("/api/channels/{channelId}", channel.getId())
+        mockMvc.perform(get("/api/guest/channels/{channelId}", channel.getId())
                         .header(ACCESS_TOKEN.value, accessToken)
                 )
                 .andExpect(status().isOk())
@@ -168,7 +168,7 @@ class ChannelControllerTest extends ControllerTest {
         channelRepository.save(channel3);
 
         // expected
-        mockMvc.perform(get("/api/channels")
+        mockMvc.perform(get("/api/guest/channels")
                         .header(ACCESS_TOKEN.value, accessToken)
                 )
                 .andExpect(status().isOk())

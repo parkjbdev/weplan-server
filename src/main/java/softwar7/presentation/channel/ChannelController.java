@@ -32,13 +32,13 @@ public class ChannelController {
         channelCreateService.createChannel(memberSession.id(), dto);
     }
 
-    @GetMapping("/channels/{channelId}")
+    @GetMapping("/guest/channels/{channelId}")
     public ChannelResponse getChannel(@Login final MemberSession memberSession,
                                       @PathVariable final long channelId) {
         return channelFindService.findChannel(channelId);
     }
 
-    @GetMapping("/channels")
+    @GetMapping("/guest/channels")
     public ChannelResponses getChannels(@Login final MemberSession memberSession) {
         List<ChannelResponse> channelResponses = channelFindService.findAll();
         return new ChannelResponses(channelResponses);

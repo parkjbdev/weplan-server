@@ -75,7 +75,7 @@ class ScheduleControllerTest extends ControllerTest {
                 .build();
 
         // expected
-        mockMvc.perform(post("/api/schedules")
+        mockMvc.perform(post("/api/guest/schedules")
                         .header(ACCESS_TOKEN.value, accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto))
@@ -148,7 +148,7 @@ class ScheduleControllerTest extends ControllerTest {
         scheduleRepository.save(schedule);
 
         // expected
-        mockMvc.perform(get("/api/schedules/{scheduleId}", schedule.getId())
+        mockMvc.perform(get("/api/guest/schedules/{scheduleId}", schedule.getId())
                         .header(ACCESS_TOKEN.value, accessToken))
                 .andExpect(status().isOk())
                 .andDo(document("단일 스케줄 조회",
@@ -209,7 +209,7 @@ class ScheduleControllerTest extends ControllerTest {
         String channelId = String.valueOf(channel.getId());
 
         // expected
-        mockMvc.perform(get("/api/schedules")
+        mockMvc.perform(get("/api/guest/schedules")
                         .header(ACCESS_TOKEN.value, accessToken)
                         .param("start", "2023-10-10")
                         .param("end", "2023-10-12")

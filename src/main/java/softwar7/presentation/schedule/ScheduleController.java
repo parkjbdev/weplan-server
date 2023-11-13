@@ -34,20 +34,20 @@ public class ScheduleController {
         this.scheduleApproveService = scheduleApproveService;
     }
 
-    @PostMapping("/schedules")
+    @PostMapping("/guest/schedules")
     public void createSchedule(@Login final MemberSession memberSession,
                                @RequestBody final ScheduleSaveRequest dto) {
         scheduleCreateService.create(memberSession, dto);
     }
 
-    @GetMapping("/schedules/{scheduleId}")
+    @GetMapping("/guest/schedules/{scheduleId}")
     public ScheduleResponse getSchedule(@Login final MemberSession memberSession,
                                         @PathVariable final long scheduleId) {
         Schedule schedule = scheduleFindService.getById(scheduleId);
         return ScheduleMapper.toResponse(schedule);
     }
 
-    @GetMapping("/schedules")
+    @GetMapping("/guest/schedules")
     public ScheduleResult getSchedules(@Login final MemberSession memberSession,
                                        @RequestParam(required = false)
                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate start,
