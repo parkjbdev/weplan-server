@@ -35,16 +35,13 @@ public class ScheduleRepository {
                 .orElseThrow(() -> new NotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION.message));
     }
 
-    public List<Schedule> findAllSchedulesByDate(final LocalDate start, final LocalDate end,
+    public List<Schedule> findAllSchedulesByDate(final LocalDateTime start, final LocalDateTime end,
                                                  final long channelId) {
-        LocalDateTime startDateTime = LocalDateTime.of(start, LocalTime.MIN);
-        LocalDateTime endDateTime = LocalDateTime.of(end, LocalTime.MAX);
-
         return queryFactory.selectFrom(schedule)
                 .where(
                         schedule.channelId.eq(channelId)
-                                .and(schedule.startTime.after(startDateTime))
-                                .and(schedule.endTime.before(endDateTime))
+                                .and(schedule.startTime.after(start))
+                                .and(schedule.endTime.before(end))
                                 .and(schedule.approval.eq(Approval.APPROVED))
                 )
                 .fetch();
@@ -65,12 +62,12 @@ public class ScheduleRepository {
                 .fetch();
     }
 
-    public List<Schedule> findAllMemberSchedules(final LocalDate start, final LocalDate end,
+    public List<Schedule> findAllMemberSchedules(final LocalDateTime start, final LocalDateTime end,
                                                  final Approval approval, final long memberId) {
         return queryFactory.select(schedule)
                 .where(schedule.memberId.eq(memberId)
-                        .and(schedule.startTime.between(LocalDateTime.from(start), LocalDateTime.from(end))
-                                .and(schedule.endTime.between(LocalDateTime.from(start), LocalDateTime.from(end))
+                        .and(schedule.startTime.between(start, end)
+                                .and(schedule.endTime.between(start, end)
                                         .and(schedule.approval.eq(approval)))
                         )
                 )

@@ -149,7 +149,9 @@ class ScheduleControllerTest extends ControllerTest {
 
         // expected
         mockMvc.perform(get("/api/guest/schedules/{scheduleId}", schedule.getId())
-                        .header(ACCESS_TOKEN.value, accessToken))
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .param("start", "2023-10-10T00:00:00")
+                        .param("end", "2023-10-12T23:59:59"))
                 .andExpect(status().isOk())
                 .andDo(document("단일 스케줄 조회",
                         preprocessResponse(prettyPrint()),
@@ -211,8 +213,8 @@ class ScheduleControllerTest extends ControllerTest {
         // expected
         mockMvc.perform(get("/api/guest/schedules")
                         .header(ACCESS_TOKEN.value, accessToken)
-                        .param("start", "2023-10-10")
-                        .param("end", "2023-10-12")
+                        .param("start", "2023-10-10T00:00:00")
+                        .param("end", "2023-10-12T23:59:59")
                         .param("channelId", channelId))
                 .andExpect(status().isOk())
                 .andDo(document("해당 일정의 스케줄 조회",

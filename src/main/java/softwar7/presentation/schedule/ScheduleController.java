@@ -17,6 +17,7 @@ import softwar7.mapper.shedule.dto.ScheduleResult;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequestMapping("/api")
@@ -51,9 +52,9 @@ public class ScheduleController {
     @GetMapping("/guest/schedules")
     public ScheduleResult getSchedules(@Login final MemberSession memberSession,
                                        @RequestParam(required = false)
-                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate start,
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDateTime start,
                                        @RequestParam(required = false)
-                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate end,
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDateTime end,
                                        @RequestParam(required = false) final long channelId
     ) {
         List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllSchedulesByDate(start, end, channelId);
@@ -64,9 +65,9 @@ public class ScheduleController {
     public List<ScheduleResponse> getRequestSchedules(@Login final MemberSession memberSession,
                       @RequestParam(required = false) final Approval approval,
                       @RequestParam(required = false)
-                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate start,
+                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDateTime start,
                       @RequestParam(required = false)
-                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate end) {
+                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDateTime end) {
         return scheduleFindService.findAllMemberSchedules(start, end, approval,memberSession.id());
     }
 

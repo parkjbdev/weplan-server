@@ -9,6 +9,7 @@ import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.repository.schedule.ScheduleRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,7 +27,7 @@ public class ScheduleFindService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponse> findAllSchedulesByDate(final LocalDate start, final LocalDate end,
+    public List<ScheduleResponse> findAllSchedulesByDate(final LocalDateTime start, final LocalDateTime end,
                                                          final long channelId) {
         List<Schedule> schedules;
         if (start != null && end != null) {
@@ -45,7 +46,7 @@ public class ScheduleFindService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponse> findAllMemberSchedules(final LocalDate start, final LocalDate end,
+    public List<ScheduleResponse> findAllMemberSchedules(final LocalDateTime start, final LocalDateTime end,
                                                          final Approval approval, final long memberId) {
         List<Schedule> schedules;
         if (start != null && end != null) {
