@@ -3,6 +3,7 @@ package softwar7.application.schedule;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.domain.schedule.vo.Approval;
 import softwar7.mapper.shedule.ScheduleMapper;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.repository.schedule.ScheduleRepository;
@@ -40,6 +41,19 @@ public class ScheduleFindService {
     @Transactional(readOnly = true)
     public List<ScheduleResponse> findAllRequestSchedules() {
         List<Schedule> schedules = scheduleRepository.findAllRequestSchedules();
+        return ScheduleMapper.toResponses(schedules);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponse> findAllMemberSchedules(final LocalDate start, final LocalDate end,
+                                                         final Approval approval, final long memberId) {
+        List<Schedule> schedules;
+        if (start != null && end != null) {
+            schedules = scheduleRepository.findAllMemberSchedules(start, end, approval, memberId);
+            return ScheduleMapper.toResponses(schedules);
+        }
+
+        schedules = scheduleRepository.findAllByMemberId(memberId, approval);
         return ScheduleMapper.toResponses(schedules);
     }
 }

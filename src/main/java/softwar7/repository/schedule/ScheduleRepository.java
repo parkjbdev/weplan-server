@@ -64,4 +64,23 @@ public class ScheduleRepository {
                 .where(schedule.approval.eq(Approval.PENDING))
                 .fetch();
     }
+
+    public List<Schedule> findAllMemberSchedules(final LocalDate start, final LocalDate end,
+                                                 final Approval approval, final long memberId) {
+        return queryFactory.select(schedule)
+                .where(schedule.memberId.eq(memberId)
+                        .and(schedule.startTime.between(LocalDateTime.from(start), LocalDateTime.from(end))
+                                .and(schedule.endTime.between(LocalDateTime.from(start), LocalDateTime.from(end))
+                                        .and(schedule.approval.eq(approval)))
+                        )
+                )
+                .fetch();
+    }
+
+    public List<Schedule> findAllByMemberId(final long memberId, final Approval approval) {
+        return queryFactory.select(schedule)
+                .where(schedule.memberId.eq(memberId)
+                        .and(schedule.approval.eq(approval)))
+                .fetch();
+    }
 }

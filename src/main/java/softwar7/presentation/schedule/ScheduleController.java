@@ -7,6 +7,7 @@ import softwar7.application.schedule.ScheduleCreateService;
 import softwar7.application.schedule.ScheduleFindService;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.domain.schedule.vo.Approval;
 import softwar7.global.annotation.AdminLogin;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.shedule.ScheduleMapper;
@@ -52,11 +53,21 @@ public class ScheduleController {
                                        @RequestParam(required = false)
                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate start,
                                        @RequestParam(required = false)
-                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate end,
+                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate end,
                                        @RequestParam(required = false) final long channelId
     ) {
         List<ScheduleResponse> scheduleResponses = scheduleFindService.findAllSchedulesByDate(start, end, channelId);
         return new ScheduleResult(scheduleResponses);
+    }
+
+    @GetMapping("/guest/schedules/request")
+    public List<ScheduleResponse> getRequestSchedules(@Login final MemberSession memberSession,
+                      @RequestParam(required = false) final Approval approval,
+                      @RequestParam(required = false)
+                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate start,
+                      @RequestParam(required = false)
+                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDate end) {
+        return scheduleFindService.findAllMemberSchedules(start, end, approval,memberSession.id());
     }
 
     @GetMapping("/admin/schedules/requests")
