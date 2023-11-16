@@ -239,6 +239,70 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
+    @DisplayName("일정에 맞는 스케줄 조회에 성공합니다")
+    void getSchedulesRequest() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        createSchedules(member, channel);
+
+        // expected
+        mockMvc.perform(get("/api/guest/schedules/requests")
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .param("approval", String.valueOf(Approval.APPROVED))
+                        .param("start", "2023-10-10T00:00:00")
+                        .param("end", "2023-10-12T23:59:59")
+                )
+                .andExpect(status().isOk())
+                .andDo(document("게스트의 요청 스케줄 목록 조회",
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("스케줄")
+                                .summary("게스트의 요청 스케줄 목록 조회")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .responseFields(
+                                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
+                                        fieldWithPath("schedules[].content").type(STRING).description("스케줄 이름"),
+                                        fieldWithPath("schedules[].start").type(STRING).description("시작 시간"),
+                                        fieldWithPath("schedules[].end").type(STRING).description("종료 시간"),
+                                        fieldWithPath("schedules[].channelId").type(NUMBER).description("채널 ID"),
+                                        fieldWithPath("schedules[].approval").type(STRING).description("승인 여부")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
     @DisplayName("스케줄 등록을 요청한 스케줄 목록을 가져옵니다")
     void getRequestSchedules() throws Exception {
         // given 1

@@ -64,7 +64,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/guest/schedules/requests")
-    public List<ScheduleResponse> getRequestSchedules(
+    public ScheduleResult getRequestSchedules(
             @Login final MemberSession memberSession,
             @RequestParam(required = false) final Approval approval,
             @RequestParam(required = false)
@@ -72,7 +72,9 @@ public class ScheduleController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final LocalDateTime end
     ) {
-        return scheduleFindService.findAllMemberSchedules(start, end, approval, memberSession.id());
+        List<ScheduleResponse> scheduleResponses =
+                scheduleFindService.findAllMemberSchedules(start, end, approval, memberSession.id());
+        return new ScheduleResult(scheduleResponses);
     }
 
     @GetMapping("/admin/schedules/requests")
