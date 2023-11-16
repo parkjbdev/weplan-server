@@ -1,5 +1,6 @@
 package softwar7.presentation.channel;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import softwar7.application.channel.ChannelCreateService;
 import softwar7.application.channel.ChannelFindService;
@@ -28,7 +29,7 @@ public class ChannelController {
 
     @PostMapping("/admin/channels")
     public void createChannel(@AdminLogin final MemberSession memberSession,
-                              @RequestBody final ChannelSaveRequest dto) {
+                              @RequestBody @Valid final ChannelSaveRequest dto) {
         channelCreateService.createChannel(memberSession.id(), dto);
     }
 
