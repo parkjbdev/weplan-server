@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import softwar7.domain.channel.Channel;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
@@ -225,6 +226,11 @@ class ScheduleControllerTest extends ControllerTest {
                                 .requestHeaders(
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
+                                .queryParameters(
+                                        RequestDocumentation.parameterWithName("start").description("시작 시간"),
+                                        RequestDocumentation.parameterWithName("end").description("종료 시간"),
+                                        RequestDocumentation.parameterWithName("channelId").description("채널 id")
+                                )
                                 .responseFields(
                                         fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
                                         fieldWithPath("schedules[].name").type(STRING).description("스케줄명"),
@@ -288,6 +294,11 @@ class ScheduleControllerTest extends ControllerTest {
                                 .summary("게스트의 요청 스케줄 목록 조회")
                                 .requestHeaders(
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .queryParameters(
+                                        RequestDocumentation.parameterWithName("approval").description("승인 여부"),
+                                        RequestDocumentation.parameterWithName("start").description("시작 시간"),
+                                        RequestDocumentation.parameterWithName("end").description("종료 시채")
                                 )
                                 .responseFields(
                                         fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
