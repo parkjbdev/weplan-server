@@ -1,5 +1,6 @@
 package softwar7.repository.schedule;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import softwar7.domain.schedule.persist.QSchedule;
@@ -64,20 +65,32 @@ public class ScheduleRepository {
 
     public List<Schedule> findAllMemberSchedules(final LocalDateTime start, final LocalDateTime end,
                                                  final Approval approval, final long memberId) {
-        return queryFactory.select(schedule)
-                .where(schedule.memberId.eq(memberId)
-                        .and(schedule.startTime.between(start, end)
-                                .and(schedule.endTime.between(start, end)
-                                        .and(schedule.approval.eq(approval)))
-                        )
-                )
+        BooleanBuilder whereConditions = new BooleanBuilder();
+        whereConditions.and(schedule.memberId.eq(memberId))
+                .and(schedule.startTime.between(start, end))
+                .and(schedule.endTime.between(start, end));
+
+        if (approval != null) {
+            whereConditions.and(schedule.approval.eq(approval));
+        }
+
+        return queryFactory.selectFrom(schedule)
+                .where(whereConditions)
                 .fetch();
     }
 
+
     public List<Schedule> findAllByMemberId(final long memberId, final Approval approval) {
-        return queryFactory.select(schedule)
-                .where(schedule.memberId.eq(memberId)
-                        .and(schedule.approval.eq(approval)))
+        BooleanBuilder whereConditions = new BooleanBuilder();
+        whereConditions.and(schedule.memberId.eq(memberId));
+
+        if (approval != null) {
+            whereConditions.and(schedule.approval.eq(approval));
+        }
+
+        return queryFactory.selectFrom(schedule)
+                .where(whereConditions)
                 .fetch();
     }
+
 }
