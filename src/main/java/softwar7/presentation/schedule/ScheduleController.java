@@ -1,5 +1,6 @@
 package softwar7.presentation.schedule;
 
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import softwar7.application.schedule.ScheduleApproveService;
@@ -38,7 +39,7 @@ public class ScheduleController {
 
     @PostMapping("/guest/schedules")
     public void createSchedule(@Login final MemberSession memberSession,
-                               @RequestBody final ScheduleSaveRequest dto) {
+                               @RequestBody @Valid final ScheduleSaveRequest dto) {
         scheduleCreateService.create(memberSession, dto);
     }
 
@@ -85,7 +86,7 @@ public class ScheduleController {
 
     @PostMapping("/admin/schedules/requests")
     public void approveSchedule(@AdminLogin final MemberSession memberSession,
-                                @RequestBody final ScheduleApproveRequest dto) {
+                                @RequestBody @Valid final ScheduleApproveRequest dto) {
         scheduleApproveService.approveSchedule(dto);
     }
 }
