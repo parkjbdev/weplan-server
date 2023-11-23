@@ -29,4 +29,8 @@ public class ChannelRepository {
     public List<Channel> findAll() {
         return channelJpaRepository.findAll();
     }
+
+    public void delete(final Channel channel){
+        channelJpaRepository.delete(channel);
+    }
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import softwar7.domain.BaseTimeEntity;
 import softwar7.global.annotation.Association;
+import softwar7.mapper.channel.dto.ChannelUpdateRequest;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,5 +30,10 @@ public class Channel extends BaseTimeEntity {
         this.memberId = memberId;
         this.channelName = channelName;
         this.channelPlace = channelPlace;
+    }
+
+    public void update(final ChannelUpdateRequest channelUpdateRequest){
+        this.channelName = channelUpdateRequest.name();
+        this.channelPlace = channelUpdateRequest.place();
     }
 }
