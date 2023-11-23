@@ -8,14 +8,14 @@ import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
 import softwar7.mapper.channel.dto.ChannelSaveRequest;
+import softwar7.mapper.channel.dto.ChannelUpdateRequest;
 import softwar7.util.ControllerTest;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
@@ -186,6 +186,133 @@ class ChannelControllerTest extends ControllerTest {
                                         fieldWithPath("channels[].name").type(STRING).description("채널명"),
                                         fieldWithPath("channels[].place").type(STRING).description("채널 장소"),
                                         fieldWithPath("channels[].createdBy").type(STRING).description("채널 주인")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("채널 삭제에 성공합니다")
+    void deleteChannel() throws Exception {
+
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+
+                .build();
+
+        channelRepository.save(channel);
+
+        // channelRepository.delete(channel);
+
+        // expected
+        mockMvc.perform(delete("/api/admin/channels/{channelId}", channel.getId())
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                /*.andDo(document("채널 삭제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("channelId").description("채널 id")
+                        ),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("채널")
+                                .summary("단일 채널 조회")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .responseFields(
+                                        fieldWithPath("id").type(NUMBER).description("채널 id"),
+                                        fieldWithPath("name").type(STRING).description("채널명"),
+                                        fieldWithPath("place").type(STRING).description("채널 장소"),
+                                        fieldWithPath("createdBy").type(STRING).description("채널 주인")
+                                )
+                                .build()
+                        )))*/;
+    }
+
+    @Test
+    @DisplayName("로그인 한 관리자가 채널을 업데이트합니다")
+    void updateChannel() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        ChannelUpdateRequest dto = ChannelUpdateRequest.builder()
+                .name("채널명")
+                .place("채널 장소")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/api/admin/channels/{channelId}", channel.getId())
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(dto))
+                )
+                .andExpect(status().isOk())
+                .andDo(document("채널 수정 성공",
+                        preprocessRequest(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("채널")
+                                .summary("채널 수정")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .requestFields(
+                                        fieldWithPath("name").type(STRING).description("채널명"),
+                                        fieldWithPath("place").type(STRING).description("채널 장소")
                                 )
                                 .build()
                         )));
