@@ -1,6 +1,7 @@
 package softwar7.global.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,6 +47,13 @@ public class ApiRestControllerAdvice {
     @ExceptionHandler(BadRequestException.class)
     public ExceptionResponse handleException(final BadRequestException e) {
         return new ExceptionResponse(e.getStatusCode(), e.getMessage());
+    }
+
+    // 400
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ExceptionResponse handleException(final HttpMessageNotReadableException e) {
+        return new ExceptionResponse("400", "형식이 맞지 않습니다");
     }
 
     // 401

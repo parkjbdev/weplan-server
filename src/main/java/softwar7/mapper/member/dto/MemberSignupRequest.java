@@ -1,13 +1,9 @@
 package softwar7.mapper.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import softwar7.domain.member.vo.RoleType;
-
-import java.util.Arrays;
 
 @Builder
 public record MemberSignupRequest(
@@ -19,14 +15,8 @@ public record MemberSignupRequest(
         String name,
         @Size(max = 11, message = "전화번호를 잘못 입력했습니다")
         String phoneNumber,
-        @NotNull(message = "권한을 입력해주세요")
         RoleType roleType,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         String adminPassword
 ) {
-        @AssertTrue(message = "잘못된 권한 값입니다")
-        private boolean isRoleTypeValid() {
-                return roleType != null && Arrays.asList(RoleType.values()).contains(roleType);
-        }
-
 }

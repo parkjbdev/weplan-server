@@ -11,6 +11,7 @@ import softwar7.global.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.List;
 
 import static softwar7.domain.schedule.persist.QSchedule.schedule;
@@ -79,7 +80,6 @@ public class ScheduleRepository {
                 .fetch();
     }
 
-
     public List<Schedule> findAllByMemberId(final long memberId, final Approval approval) {
         BooleanBuilder whereConditions = new BooleanBuilder();
         whereConditions.and(schedule.memberId.eq(memberId));
@@ -93,4 +93,12 @@ public class ScheduleRepository {
                 .fetch();
     }
 
+    public boolean isNotOverlapping(final LocalDateTime start, final LocalDateTime end) {
+        return queryFactory
+                .selectFrom(schedule)
+                .where(
+                        schedule.startTime.lt(end).and(schedule.endTime.gt(start))
+                )
+                .fetchOne() == null;
+    }
 }

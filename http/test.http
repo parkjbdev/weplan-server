@@ -7,7 +7,7 @@ Content-Type: application/json
     "loginId" : "testId",
     "password" : "password1234",
     "name" : "name",
-    "phoneNumber" : "01012345678",
+    "phoneNumber" : "01000001234",
     "adminPassword" : "관리자 비밀번호 1234",
     "roleType" : "ADMIN"
 }
@@ -20,4 +20,27 @@ Content-Type: application/json
 {
   "loginId" : "testId",
   "password" : "password1234"
+}
+
+### 채널 생성
+
+POST http://localhost:8080/api/admin/channels
+Content-Type: application/json
+
+{
+  "name" : "채널명",
+  "place" : "채널 장소"
+}
+
+### 스케줄 생성
+
+POST http://localhost:8080/api/guest/schedules
+Content-Type: application/json
+
+{
+  "name" : "스케줄명",
+  "content" : "스케줄 내용",
+  "start" : "2023-11-24T00:00:10",
+  "end" : "2023-11-24T00:00:20",
+  "channelId" : 1
 }
