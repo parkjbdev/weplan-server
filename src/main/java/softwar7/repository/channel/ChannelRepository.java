@@ -33,4 +33,8 @@ public class ChannelRepository {
     public void delete(final Channel channel){
         channelJpaRepository.delete(channel);
     }
+
+    public long count() {
+        return channelJpaRepository.count();
+    }
 }
