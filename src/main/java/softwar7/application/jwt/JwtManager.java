@@ -31,8 +31,10 @@ public class JwtManager {
     }
 
     public String createRefreshToken(final long memberId, final long expired) {
+        String refreshToken = jwtCreateTokenService.createRefreshToken(memberId, expired);
         log.info("RefreshToken 발급={}", memberId);
-        return jwtCreateTokenService.createRefreshToken(memberId, expired);
+        log.info("RefreshToken={}", refreshToken);
+        return refreshToken;
     }
 
     public void setHeader(final HttpServletResponse response, final String accessToken,
