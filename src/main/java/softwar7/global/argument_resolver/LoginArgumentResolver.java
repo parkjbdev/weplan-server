@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -30,6 +31,7 @@ import static softwar7.global.constant.JwtKey.JWT_KEY;
 import static softwar7.global.constant.LoginConstant.*;
 import static softwar7.global.constant.TimeConstant.ONE_HOUR;
 
+@Slf4j
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final byte[] decodedKey = Base64.getDecoder().decode(JWT_KEY);
@@ -104,6 +106,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             Jws<Claims> claims = getClaims(refreshToken);
             String memberId = claims.getBody().getSubject();
             JwtRefreshToken jwtRefreshToken = jwtRefreshTokenRepository.getByMemberId(Long.parseLong(memberId));
+
             if (refreshToken.equals(jwtRefreshToken.getRefreshToken())) {
                 Member member = memberRepository.getById(Long.parseLong(memberId));
                 MemberSession memberSession = MemberMapper.toMemberSession(member);
@@ -111,6 +114,9 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
                 response.setHeader(ACCESS_TOKEN.value, accessToken);
                 return memberSession;
             }
+
+            log.info("Client RefreshToken={}", refreshToken);
+            log.info("DB RefreshToken={}", jwtRefreshToken.getRefreshToken());
 
             throw new UnAuthorizedException(REFRESH_TOKEN_NOT_MATCH.message);
         } catch (JwtException e) {

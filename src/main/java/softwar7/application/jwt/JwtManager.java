@@ -1,6 +1,7 @@
 package softwar7.application.jwt;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softwar7.domain.jwt.JwtRefreshToken;
@@ -10,6 +11,7 @@ import softwar7.repository.jwt.JwtRefreshTokenRepository;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class JwtManager {
 
@@ -29,6 +31,7 @@ public class JwtManager {
     }
 
     public String createRefreshToken(final long memberId, final long expired) {
+        log.info("RefreshToken 발급={}", memberId);
         return jwtCreateTokenService.createRefreshToken(memberId, expired);
     }
 
