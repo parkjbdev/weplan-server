@@ -75,7 +75,7 @@ class ScheduleControllerTest extends ControllerTest {
                 .build();
 
         // expected
-        mockMvc.perform(post("/api/guest/schedules")
+        mockMvc.perform(post("/api/guest/schedules/requests")
                         .header(ACCESS_TOKEN.value, accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto))

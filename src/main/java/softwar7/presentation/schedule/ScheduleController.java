@@ -38,7 +38,7 @@ public class ScheduleController {
         this.scheduleUpdateService = scheduleUpdateService;
     }
 
-    @PostMapping("/guest/schedules")
+    @PostMapping("/guest/schedules/requests")
     public void createSchedule(@Login final MemberSession memberSession,
                                @RequestBody @Valid final ScheduleSaveRequest dto) {
         scheduleCreateService.create(memberSession, dto);
