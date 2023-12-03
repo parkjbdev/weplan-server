@@ -12,7 +12,6 @@ import softwar7.global.annotation.Login;
 import softwar7.mapper.shedule.ScheduleMapper;
 import softwar7.mapper.shedule.dto.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -91,13 +90,14 @@ public class ScheduleController {
         scheduleApproveService.approveSchedule(dto);
     }
 
-    @DeleteMapping("/admin/schedules/{scheduleId}")
-    public void deleteSchedule(@AdminLogin final MemberSession memberSession,
+    @DeleteMapping("/guest/schedules/{scheduleId}")
+    public void deleteSchedule(@Login final MemberSession memberSession,
                                @PathVariable final long scheduleId) {
         scheduleDeleteService.deleteSchedule(scheduleId);
     }
-    @PatchMapping("/admin/schedules/{scheduleId}")
-    public void updateSchedule(@AdminLogin final MemberSession memberSession,
+
+    @PatchMapping("/guest/schedules/{scheduleId}")
+    public void updateSchedule(@Login final MemberSession memberSession,
                                @PathVariable final long scheduleId,
                                @RequestBody @Valid final ScheduleUpdateRequest dto) {
         scheduleUpdateService.updateSchedule(scheduleId, dto);

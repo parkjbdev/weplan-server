@@ -226,15 +226,13 @@ class ChannelControllerTest extends ControllerTest {
 
         channelRepository.save(channel);
 
-        // channelRepository.delete(channel);
-
         // expected
         mockMvc.perform(delete("/api/admin/channels/{channelId}", channel.getId())
                         .header(ACCESS_TOKEN.value, accessToken)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                /*.andDo(document("채널 삭제",
+                .andDo(document("채널 삭제",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -242,18 +240,12 @@ class ChannelControllerTest extends ControllerTest {
                         ),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("채널")
-                                .summary("단일 채널 조회")
+                                .summary("채널 삭제")
                                 .requestHeaders(
                                         headerWithName(ACCESS_TOKEN.value).description("AccessToken")
                                 )
-                                .responseFields(
-                                        fieldWithPath("id").type(NUMBER).description("채널 id"),
-                                        fieldWithPath("name").type(STRING).description("채널명"),
-                                        fieldWithPath("place").type(STRING).description("채널 장소"),
-                                        fieldWithPath("createdBy").type(STRING).description("채널 주인")
-                                )
                                 .build()
-                        )))*/;
+                        )));
     }
 
     @Test
