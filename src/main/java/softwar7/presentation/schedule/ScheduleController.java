@@ -3,19 +3,14 @@ package softwar7.presentation.schedule;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import softwar7.application.schedule.ScheduleApproveService;
-import softwar7.application.schedule.ScheduleCreateService;
-import softwar7.application.schedule.ScheduleFindService;
+import softwar7.application.schedule.*;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.schedule.persist.Schedule;
 import softwar7.domain.schedule.vo.Approval;
 import softwar7.global.annotation.AdminLogin;
 import softwar7.global.annotation.Login;
 import softwar7.mapper.shedule.ScheduleMapper;
-import softwar7.mapper.shedule.dto.ScheduleApproveRequest;
-import softwar7.mapper.shedule.dto.ScheduleResponse;
-import softwar7.mapper.shedule.dto.ScheduleResult;
-import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
+import softwar7.mapper.shedule.dto.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,13 +23,19 @@ public class ScheduleController {
     private final ScheduleCreateService scheduleCreateService;
     private final ScheduleFindService scheduleFindService;
     private final ScheduleApproveService scheduleApproveService;
+    private final ScheduleDeleteService scheduleDeleteService;
+    private final ScheduleUpdateService scheduleUpdateService;
 
     public ScheduleController(final ScheduleCreateService scheduleCreateService,
                               final ScheduleFindService scheduleFindService,
-                              final ScheduleApproveService scheduleApproveService) {
+                              final ScheduleApproveService scheduleApproveService,
+                              final ScheduleDeleteService scheduleDeleteService,
+                              final ScheduleUpdateService scheduleUpdateService) {
         this.scheduleCreateService = scheduleCreateService;
         this.scheduleFindService = scheduleFindService;
         this.scheduleApproveService = scheduleApproveService;
+        this.scheduleDeleteService = scheduleDeleteService;
+        this.scheduleUpdateService = scheduleUpdateService;
     }
 
     @PostMapping("/guest/schedules")
@@ -88,5 +89,17 @@ public class ScheduleController {
     public void approveSchedule(@AdminLogin final MemberSession memberSession,
                                 @RequestBody @Valid final ScheduleApproveRequest dto) {
         scheduleApproveService.approveSchedule(dto);
+    }
+
+    @DeleteMapping("/admin/schedules/{scheduleId}")
+    public void deleteSchedule(@AdminLogin final MemberSession memberSession,
+                               @PathVariable final long scheduleId) {
+        scheduleDeleteService.deleteSchedule(scheduleId);
+    }
+    @PatchMapping("/admin/schedules/{scheduleId}")
+    public void updateSchedule(@AdminLogin final MemberSession memberSession,
+                               @PathVariable final long scheduleId,
+                               @RequestBody @Valid final ScheduleUpdateRequest dto) {
+        scheduleUpdateService.updateSchedule(scheduleId, dto);
     }
 }

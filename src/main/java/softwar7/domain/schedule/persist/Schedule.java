@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import softwar7.domain.BaseTimeEntity;
 import softwar7.domain.schedule.vo.Approval;
 import softwar7.global.annotation.Association;
+import softwar7.mapper.shedule.dto.ScheduleUpdateRequest;
 
 import java.time.LocalDateTime;
 
@@ -55,5 +56,10 @@ public class Schedule extends BaseTimeEntity {
 
     public void updateApproval(final Approval updateApproval) {
         this.approval = updateApproval;
+    }
+
+    public void updateSchedule(final ScheduleUpdateRequest scheduleUpdateRequest){
+        this.scheduleName = scheduleUpdateRequest.name();
+        this.content = scheduleUpdateRequest.content();
     }
 }

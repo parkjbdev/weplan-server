@@ -92,6 +92,9 @@ public class ScheduleRepository {
                 .where(whereConditions)
                 .fetch();
     }
+    public void delete(final Schedule schedule){
+        scheduleJpaRepository.delete(schedule);
+    }
 
     public boolean isNotOverlapping(final LocalDateTime start, final LocalDateTime end) {
         return queryFactory
