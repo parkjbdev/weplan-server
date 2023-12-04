@@ -1,6 +1,7 @@
 package softwar7.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import softwar7.repository.channel.ChannelRepository;
 import softwar7.repository.member.MemberRepository;
 
@@ -12,4 +13,7 @@ public abstract class ServiceTest {
 
     @Autowired
     protected ChannelRepository channelRepository;
+
+    @Autowired
+    protected PasswordEncoder passwordEncoder;
 }
