@@ -57,13 +57,13 @@ public class ChannelController {
     @DeleteMapping("/admin/channels/{channelId}")
     public void deleteChannel(@AdminLogin final MemberSession memberSession,
                               @PathVariable final long channelId) {
-        channelDeleteService.deleteChannel(channelId);
+        channelDeleteService.deleteChannel(memberSession.id(), channelId);
     }
 
     @PatchMapping("/admin/channels/{channelId}")
     public void updateChannel(@AdminLogin final MemberSession memberSession,
                               @PathVariable final long channelId,
                               @RequestBody final ChannelUpdateRequest channelUpdateRequest) {
-        channelUpdateService.updateChannel(channelId, channelUpdateRequest);
+        channelUpdateService.updateChannel(memberSession.id(), channelId, channelUpdateRequest);
     }
 }
