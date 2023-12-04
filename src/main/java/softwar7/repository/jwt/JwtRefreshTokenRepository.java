@@ -29,4 +29,8 @@ public class JwtRefreshTokenRepository {
     public Optional<JwtRefreshToken> findByMemberId(final long memberId) {
         return jwtRefreshTokenJpaRepository.findByMemberId(memberId);
     }
+
+    public long count() {
+        return jwtRefreshTokenJpaRepository.count();
+    }
 }
