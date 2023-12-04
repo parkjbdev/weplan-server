@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import softwar7.repository.channel.ChannelRepository;
 import softwar7.repository.jwt.JwtRefreshTokenRepository;
 import softwar7.repository.member.MemberRepository;
+import softwar7.repository.schedule.ScheduleRepository;
 
 @AcceptanceTest
 public abstract class ServiceTest {
@@ -14,6 +15,9 @@ public abstract class ServiceTest {
 
     @Autowired
     protected ChannelRepository channelRepository;
+
+    @Autowired
+    protected ScheduleRepository scheduleRepository;
 
     @Autowired
     protected JwtRefreshTokenRepository jwtRefreshTokenRepository;

@@ -8,7 +8,6 @@ import softwar7.mapper.shedule.ScheduleMapper;
 import softwar7.mapper.shedule.dto.ScheduleResponse;
 import softwar7.repository.schedule.ScheduleRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

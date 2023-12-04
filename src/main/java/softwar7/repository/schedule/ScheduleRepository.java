@@ -104,4 +104,8 @@ public class ScheduleRepository {
                 )
                 .fetchOne() == null;
     }
+
+    public long count() {
+        return scheduleJpaRepository.count();
+    }
 }
