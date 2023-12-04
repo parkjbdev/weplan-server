@@ -29,7 +29,7 @@ import static softwar7.global.constant.TimeConstant.ONE_MONTH;
 @AutoConfigureMockMvc
 @ExtendWith(RestDocumentationExtension.class)
 @AcceptanceTest
-public class ControllerTest {
+public abstract class ControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;

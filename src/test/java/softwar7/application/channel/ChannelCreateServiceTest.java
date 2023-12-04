@@ -1,20 +1,14 @@
 package softwar7.application.channel;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import softwar7.mapper.channel.dto.ChannelSaveRequest;
-import softwar7.repository.channel.ChannelRepository;
+import softwar7.util.ServiceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class ChannelCreateServiceTest {
-
-    @Autowired
-    private ChannelRepository channelRepository;
+class ChannelCreateServiceTest extends ServiceTest {
 
     @Autowired
     private ChannelCreateService channelCreateService;
