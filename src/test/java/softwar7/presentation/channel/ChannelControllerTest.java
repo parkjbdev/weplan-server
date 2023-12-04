@@ -29,7 +29,7 @@ import static softwar7.global.constant.TimeConstant.ONE_HOUR;
 class ChannelControllerTest extends ControllerTest {
 
     @Test
-    @DisplayName("로그인 한 관리자가 채널을 생성합니다")
+    @DisplayName("로그인 한 관리자가 채널을 생성한다.")
     void createChannel() throws Exception {
         // given
         String accessToken = login();
@@ -63,7 +63,46 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("단일 채널 조회에 성공합니다")
+    @DisplayName("채널 생성 실패 - 잘못된 형식")
+    void createChannelFail() throws Exception {
+        // given
+        String accessToken = login();
+
+        ChannelSaveRequest dto = ChannelSaveRequest.builder()
+                .name("")
+                .place("채널 장소")
+                .build();
+
+        // expected
+        mockMvc.perform(post("/api/admin/channels")
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(document("채널 생성 실패",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("채널")
+                                .summary("채널 생성")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .requestFields(
+                                        fieldWithPath("name").type(STRING).description("채널명"),
+                                        fieldWithPath("place").type(STRING).description("채널 장소")
+                                )
+                                .responseFields(
+                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
+                                        fieldWithPath("message").type(STRING).description("예외 메세지")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("채널 id로 특정 채널을 조회한다.")
     void getChannel() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -122,7 +161,7 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("모든 채널 조회에 성공합니다")
+    @DisplayName("채널 목록을 조회한다.")
     void getChannels() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -192,7 +231,7 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("채널 삭제에 성공합니다")
+    @DisplayName("로그인한 관리자가 채널을 삭제한다.")
     void deleteChannel() throws Exception {
 
         // given 1
@@ -249,7 +288,7 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 한 관리자가 채널을 업데이트합니다")
+    @DisplayName("로그인 한 관리자가 채널을 수정한다.")
     void updateChannel() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");

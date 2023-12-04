@@ -18,6 +18,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static softwar7.domain.member.vo.RoleType.*;
 
 class MemberControllerTest extends ControllerTest {
 
@@ -30,7 +31,7 @@ class MemberControllerTest extends ControllerTest {
                 .password("비밀번호 1234")
                 .name("사용자 이름")
                 .phoneNumber("01012345678")
-                .roleType(RoleType.GUEST)
+                .roleType(GUEST)
                 .build();
 
         // expected
@@ -64,7 +65,7 @@ class MemberControllerTest extends ControllerTest {
                 .password("비밀번호 1234")
                 .name("사용자 이름")
                 .phoneNumber("01012345678")
-                .roleType(RoleType.ADMIN)
+                .roleType(ADMIN)
                 .adminPassword("관리자 비밀번호 1234")
                 .build();
 
@@ -92,7 +93,7 @@ class MemberControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 실패")
+    @DisplayName("회원가입 실패 - 잘못된 형식")
     void signupFail() throws Exception {
         // given
         MemberSignupRequest dto = MemberSignupRequest.builder()
@@ -100,7 +101,51 @@ class MemberControllerTest extends ControllerTest {
                 .password("비밀번호 1234 형식을 지키지 않음 (8자 ~ 15자)")
                 .name("사용자 이름")
                 .phoneNumber("01012345678")
-                .roleType(RoleType.GUEST)
+                .roleType(GUEST)
+                .build();
+
+        // expected
+        mockMvc.perform(post("/api/signup")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(document("회원가입 실패",
+                        preprocessRequest(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("회원")
+                                .summary("회원가입")
+                                .requestFields(
+                                        fieldWithPath("loginId").type(STRING).description("로그인 아이디"),
+                                        fieldWithPath("password").type(STRING).description("비밀번호"),
+                                        fieldWithPath("name").type(STRING).description("사용자 이름"),
+                                        fieldWithPath("phoneNumber").type(STRING).description("전화번호"),
+                                        fieldWithPath("roleType").type(STRING).description("권한")
+                                )
+                                .responseFields(
+                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
+                                        fieldWithPath("message").type(STRING).description("예외 메세지")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 중복 회원")
+    void signupDuplicationFail() throws Exception {
+        // given
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .build();
+
+        memberRepository.save(member);
+
+        MemberSignupRequest dto = MemberSignupRequest.builder()
+                .loginId("로그인 아이디")
+                .password("비밀번호 1234")
+                .name("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(GUEST)
                 .build();
 
         // expected
@@ -140,7 +185,7 @@ class MemberControllerTest extends ControllerTest {
                 .password(encodedPassword)
                 .username("사용자 이름")
                 .phoneNumber("01012345678")
-                .roleType(RoleType.ADMIN)
+                .roleType(ADMIN)
                 .build();
 
         memberRepository.save(member);
@@ -183,7 +228,7 @@ class MemberControllerTest extends ControllerTest {
                 .password(encodedPassword)
                 .username("사용자 이름")
                 .phoneNumber("01012345678")
-                .roleType(RoleType.ADMIN)
+                .roleType(ADMIN)
                 .build();
 
         memberRepository.save(member);
