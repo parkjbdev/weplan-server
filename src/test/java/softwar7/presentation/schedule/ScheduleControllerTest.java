@@ -38,7 +38,7 @@ import static softwar7.global.constant.TimeConstant.ONE_HOUR;
 class ScheduleControllerTest extends ControllerTest {
 
     @Test
-    @DisplayName("스케줄 생성에 성공합니다")
+    @DisplayName("스케줄 예약 요청")
     void createSchedule() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -100,6 +100,86 @@ class ScheduleControllerTest extends ControllerTest {
                                         fieldWithPath("start").type(STRING).description("시작 시간"),
                                         fieldWithPath("end").type(STRING).description("종료 시간"),
                                         fieldWithPath("channelId").type(NUMBER).description("채널 ID")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("스케줄 예약 요청 - 중복된 스케줄")
+    void createScheduleFail() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        Schedule schedule = Schedule.builder()
+                .channelId(channel.getId())
+                .startTime(LocalDateTime.of(2023, 12, 1, 0, 0, 0))
+                .endTime(LocalDateTime.of(2023, 12, 2, 0, 0, 0))
+                .build();
+
+        scheduleRepository.save(schedule);
+
+        ScheduleSaveRequest dto = ScheduleSaveRequest.builder()
+                .name("스케줄명")
+                .content("스케줄 내용")
+                .start(LocalDateTime.of(2023, 12, 1, 0, 0))
+                .end(LocalDateTime.of(2023, 12, 2, 0, 0))
+                .channelId(channel.getId())
+                .build();
+
+        // expected
+        mockMvc.perform(post("/api/guest/schedules/requests")
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(document("스케줄 생성 실패",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("스케줄")
+                                .summary("스케줄 생성")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .requestFields(
+                                        fieldWithPath("name").type(STRING).description("스케줄 이름"),
+                                        fieldWithPath("content").type(STRING).description("스케줄 내용"),
+                                        fieldWithPath("start").type(STRING).description("시작 시간"),
+                                        fieldWithPath("end").type(STRING).description("종료 시간"),
+                                        fieldWithPath("channelId").type(NUMBER).description("채널 ID")
+                                )
+                                .responseFields(
+                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
+                                        fieldWithPath("message").type(STRING).description("예외 메세지")
                                 )
                                 .build()
                         )));
@@ -179,7 +259,7 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("일정에 맞는 스케줄 조회에 성공합니다")
+    @DisplayName("일정에 맞는 스케줄 조회")
     void getSchedules() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -248,7 +328,7 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("일정에 맞는 스케줄 조회에 성공합니다")
+    @DisplayName("사용자의 스케줄 신청 목록 조회")
     void getSchedulesRequest() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -317,7 +397,7 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("스케줄 등록을 요청한 스케줄 목록을 가져옵니다")
+    @DisplayName("스케줄 등록을 요청한 스케줄 목록 조회")
     void getRequestSchedules() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -378,7 +458,7 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("스케줄 등록을 요청한 스케줄을 승인합니다")
+    @DisplayName("스케줄 등록을 요청한 스케줄을 승인")
     void approveRequestSchedules() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -448,7 +528,77 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 한 게스트가 스케줄을 업데이트합니다")
+    @DisplayName("스케줄 등록을 요청한 스케줄을 거절")
+    void rejectRequestSchedules() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        Schedule schedule = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .username(member.getUsername())
+                .scheduleName("스케줄명3")
+                .content("스케줄 내용3")
+                .startTime(LocalDateTime.of(2023, 10, 12, 10, 0))
+                .endTime(LocalDateTime.of(2023, 10, 12, 11, 0))
+                .approval(Approval.PENDING)
+                .build();
+
+        scheduleRepository.save(schedule);
+        ScheduleApproveRequest dto = new ScheduleApproveRequest(schedule.getId(), Approval.REJECTED);
+
+        // expected
+        mockMvc.perform(post("/api/admin/schedules/requests")
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(document("스케줄 등록 요청 거절",
+                        preprocessRequest(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("스케줄")
+                                .summary("스케줄 등록 요청 거절")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .requestFields(
+                                        fieldWithPath("id").type(NUMBER).description("스케줄 ID"),
+                                        fieldWithPath("approval").type(STRING).description("승인 여부")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("스케줄 업데이트")
     void updateSchedule() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -517,6 +667,73 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
+    @DisplayName("권한 없는 사용자가 스케줄 삭제")
+    void deleteScheduleFail() throws Exception {
+
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        Schedule schedule = Schedule.builder()
+                .memberId(9999L)
+                .channelId(channel.getId())
+                .build();
+
+        scheduleRepository.save(schedule);
+
+        // expected
+        mockMvc.perform(delete("/api/guest/schedules/{scheduleId}", schedule.getId())
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isForbidden())
+                .andDo(document("스케줄 삭제 - 실패",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                RequestDocumentation.parameterWithName("scheduleId").description("스케줄 id")
+                        ),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("스케줄")
+                                .summary("스케줄 삭제")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .responseFields(
+                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
+                                        fieldWithPath("message").type(STRING).description("예외 메세지")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
     @DisplayName("스케줄 삭제에 성공합니다")
     void deleteSchedule() throws Exception {
 
@@ -579,7 +796,6 @@ class ScheduleControllerTest extends ControllerTest {
                                 .build()
                         )));
     }
-
 
     private void createSchedules(final Member member, final Channel channel) {
         Schedule schedule1 = Schedule.builder()

@@ -93,7 +93,7 @@ public class ScheduleController {
     @DeleteMapping("/guest/schedules/{scheduleId}")
     public void deleteSchedule(@Login final MemberSession memberSession,
                                @PathVariable final long scheduleId) {
-        scheduleDeleteService.deleteSchedule(scheduleId);
+        scheduleDeleteService.deleteSchedule(memberSession.id(), scheduleId);
     }
 
     @PatchMapping("/guest/schedules/{scheduleId}")

@@ -29,7 +29,7 @@ import static softwar7.global.constant.TimeConstant.ONE_HOUR;
 class ChannelControllerTest extends ControllerTest {
 
     @Test
-    @DisplayName("로그인 한 관리자가 채널을 생성한다.")
+    @DisplayName("로그인 한 관리자가 채널을 생성")
     void createChannel() throws Exception {
         // given
         String accessToken = login();
@@ -102,7 +102,7 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("채널 id로 특정 채널을 조회한다.")
+    @DisplayName("채널 ID로 특정 채널을 조회")
     void getChannel() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -161,7 +161,7 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("채널 목록을 조회한다.")
+    @DisplayName("채널 목록 조회")
     void getChannels() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -231,9 +231,67 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("로그인한 관리자가 채널을 삭제한다.")
-    void deleteChannel() throws Exception {
+    @DisplayName("권한 없는 사용자가 특정 채널 삭제")
+    void deleteChannelFail() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
 
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
+
+        Channel channel = Channel.builder()
+                .memberId(9999L)
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // expected
+        mockMvc.perform(delete("/api/admin/channels/{channelId}", channel.getId())
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isForbidden())
+                .andDo(document("채널 삭제 실패",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("channelId").description("채널 id")
+                        ),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("채널")
+                                .summary("채널 삭제")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .responseFields(
+                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
+                                        fieldWithPath("message").type(STRING).description("예외 메세지")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("로그인한 관리자가 채널을 삭제")
+    void deleteChannel() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
 
@@ -260,7 +318,6 @@ class ChannelControllerTest extends ControllerTest {
                 .memberId(member.getId())
                 .channelName("채널명")
                 .channelPlace("채널 장소")
-
                 .build();
 
         channelRepository.save(channel);
@@ -288,8 +345,8 @@ class ChannelControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 한 관리자가 채널을 수정한다.")
-    void updateChannel() throws Exception {
+    @DisplayName("권한없는 사용자가 특정 채널을 수정")
+    void updateChannelFail() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
 
@@ -312,6 +369,70 @@ class ChannelControllerTest extends ControllerTest {
 
         String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
 
+        Channel channel = Channel.builder()
+                .memberId(9999L)
+                .channelName("채널명")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        ChannelUpdateRequest dto = ChannelUpdateRequest.builder()
+                .name("채널명")
+                .place("채널 장소")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/api/admin/channels/{channelId}", channel.getId())
+                        .header(ACCESS_TOKEN.value, accessToken)
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(dto))
+                )
+                .andExpect(status().isForbidden())
+                .andDo(document("채널 수정 실패",
+                        preprocessRequest(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("채널")
+                                .summary("채널 수정")
+                                .requestHeaders(
+                                        headerWithName(ACCESS_TOKEN.value).description("AccessToken")
+                                )
+                                .requestFields(
+                                        fieldWithPath("name").type(STRING).description("채널명"),
+                                        fieldWithPath("place").type(STRING).description("채널 장소")
+                                )
+                                .responseFields(
+                                        fieldWithPath("statusCode").type(STRING).description("상태 코드"),
+                                        fieldWithPath("message").type(STRING).description("예외 메세지")
+                                )
+                                .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("로그인 한 관리자가 특정 채널을 수정")
+    void updateChannel() throws Exception {
+        // given 1
+        String encodedPassword = passwordEncoder.encode("비밀번호 1234");
+
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .password(encodedPassword)
+                .username("사용자 이름")
+                .phoneNumber("01012345678")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        MemberSession memberSession = MemberSession.builder()
+                .id(member.getId())
+                .username("사용자 이름")
+                .roleType(RoleType.ADMIN)
+                .build();
+
+        String accessToken = jwtManager.createAccessToken(memberSession, ONE_HOUR.value);
 
         Channel channel = Channel.builder()
                 .memberId(member.getId())

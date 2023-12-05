@@ -4,6 +4,7 @@ public enum ExceptionMessage {
 
     ADMIN_FORBIDDEN_EXCEPTION("관리자 권한이 없습니다"),
     CHANNEL_FORBIDDEN_EXCEPTION("해당 채널에 대한 수정/삭제 권한이 없습니다"),
+    SCHEDULE_FORBIDDEN_EXCEPTION("해당 스케줄에 대한 수정/삭제 권한이 없습니다"),
     MEMBER_NOT_FOUND_EXCEPTION("회원을 찾을 수 없습니다"),
     CHANNEL_NOT_FOUND_EXCEPTION("채널을 찾을 수 없습니다"),
     SCHEDULE_NOT_FOUND_EXCEPTION("스케줄을 찾을 수 없습니다"),
