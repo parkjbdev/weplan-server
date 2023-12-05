@@ -101,7 +101,7 @@ public class ScheduleRepository {
                 .selectFrom(schedule)
                 .where(
                         schedule.channelId.eq(channelId)
-                                .and(schedule.startTime.lt(end).and(schedule.endTime.gt(start))
+                                .and(schedule.startTime.lt(end).and(schedule.endTime.goe(start))
                                 ))
                 .fetchOne() == null;
     }
