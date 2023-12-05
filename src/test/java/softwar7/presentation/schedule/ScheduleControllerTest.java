@@ -142,6 +142,7 @@ class ScheduleControllerTest extends ControllerTest {
                 .channelId(channel.getId())
                 .startTime(LocalDateTime.of(2023, 12, 1, 0, 0, 0))
                 .endTime(LocalDateTime.of(2023, 12, 2, 0, 0, 0))
+                .approval(Approval.APPROVED)
                 .build();
 
         scheduleRepository.save(schedule);

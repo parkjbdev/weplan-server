@@ -8,6 +8,7 @@ import softwar7.domain.member.persist.Member;
 import softwar7.domain.member.vo.MemberSession;
 import softwar7.domain.member.vo.RoleType;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.domain.schedule.vo.Approval;
 import softwar7.global.exception.BadRequestException;
 import softwar7.mapper.shedule.dto.ScheduleSaveRequest;
 import softwar7.util.ServiceTest;
@@ -87,6 +88,7 @@ class ScheduleCreateServiceTest extends ServiceTest {
                 .channelId(channel.getId())
                 .startTime(LocalDateTime.of(2023, 12, 1, 0, 0, 0))
                 .endTime(LocalDateTime.of(2023, 12, 2, 0, 0, 0))
+                .approval(Approval.APPROVED)
                 .build();
 
         scheduleRepository.save(schedule);

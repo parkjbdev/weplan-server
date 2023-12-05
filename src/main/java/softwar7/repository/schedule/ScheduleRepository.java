@@ -1,6 +1,7 @@
 package softwar7.repository.schedule;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.EnumPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import softwar7.domain.schedule.persist.QSchedule;
@@ -15,6 +16,7 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.List;
 
 import static softwar7.domain.schedule.persist.QSchedule.schedule;
+import static softwar7.domain.schedule.vo.Approval.*;
 import static softwar7.global.constant.ExceptionMessage.SCHEDULE_NOT_FOUND_EXCEPTION;
 
 @Repository
@@ -44,7 +46,7 @@ public class ScheduleRepository {
                         schedule.channelId.eq(channelId)
                                 .and(schedule.startTime.after(start))
                                 .and(schedule.endTime.before(end))
-                                .and(schedule.approval.eq(Approval.APPROVED))
+                                .and(schedule.approval.eq(APPROVED))
                 )
                 .fetch();
     }
@@ -53,14 +55,14 @@ public class ScheduleRepository {
         return queryFactory.selectFrom(schedule)
                 .where(
                         schedule.channelId.eq(channelId)
-                                .and(schedule.approval.eq(Approval.APPROVED))
+                                .and(schedule.approval.eq(APPROVED))
                 )
                 .fetch();
     }
 
     public List<Schedule> findAllRequestSchedules() {
         return queryFactory.selectFrom(schedule)
-                .where(schedule.approval.eq(Approval.PENDING))
+                .where(schedule.approval.eq(PENDING))
                 .fetch();
     }
 
@@ -100,7 +102,8 @@ public class ScheduleRepository {
         return queryFactory
                 .selectFrom(schedule)
                 .where(
-                        schedule.channelId.eq(channelId)
+                        schedule.approval.eq(APPROVED)
+                                .and(schedule.channelId.eq(channelId))
                                 .and(schedule.startTime.lt(end).and(schedule.endTime.goe(start))
                                 ))
                 .fetchOne() == null;
