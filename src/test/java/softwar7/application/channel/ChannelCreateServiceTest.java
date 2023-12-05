@@ -13,7 +13,7 @@ class ChannelCreateServiceTest extends ServiceTest {
     @Autowired
     private ChannelCreateService channelCreateService;
 
-    @DisplayName("로그인 한 회원이 채널을 생성한다.")
+    @DisplayName("형식에 맞는 데이터로 채널을 생성")
     @Test
     void createChannel() {
         // given

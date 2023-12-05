@@ -1,6 +1,5 @@
 package softwar7.application.member;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +11,13 @@ import softwar7.util.ServiceTest;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemberSignupServiceTest extends ServiceTest {
 
     @Autowired
     protected MemberSignupService memberSignupService;
 
-    @DisplayName("게스트 권한으로 입력한 정보를 회원 정보를 DB에 저장한다.")
+    @DisplayName("서버에 등록되지 않은 정보로 형식에 맞는 데이터로 관리자 회원가입")
     @Test
     void signupGuest() {
         // given
@@ -37,7 +35,7 @@ class MemberSignupServiceTest extends ServiceTest {
         assertThat(memberRepository.count()).isEqualTo(1);
     }
 
-    @DisplayName("관리자 권한으로 입력한 정보를 회원 정보를 DB에 저장한다.")
+    @DisplayName("서버에 등록되지 않은 정보로 형식에 맞는 데이터로 게스트 회원가입")
     @Test
     void signupAdmin() {
         // given
@@ -75,7 +73,7 @@ class MemberSignupServiceTest extends ServiceTest {
                 .isInstanceOf(BadRequestException.class);
     }
 
-    @DisplayName("이미 가입된 회원이 있으면 예외가 발생한다.")
+    @DisplayName("서버에 이미 등록된 정보로 회원가입")
     @Test
     void validateDuplication() {
         // given 1

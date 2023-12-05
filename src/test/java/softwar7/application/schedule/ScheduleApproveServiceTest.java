@@ -17,7 +17,7 @@ class ScheduleApproveServiceTest extends ServiceTest {
     @Autowired
     protected ScheduleApproveService scheduleApproveService;
 
-    @DisplayName("관리자가 신청한 예약 스케줄을 승인한다.")
+    @DisplayName("승인 대기 스케줄을 승인 상태로 변경")
     @Test
     void approveSchedule() {
         // given 1
@@ -54,7 +54,7 @@ class ScheduleApproveServiceTest extends ServiceTest {
         assertThat(findSchedule.getApproval()).isEqualTo(APPROVED);
     }
 
-    @DisplayName("관리자가 신청한 예약 스케줄을 거절한다.")
+    @DisplayName("승인 대기 스케줄을 거절 상태로 변경")
     @Test
     void rejectSchedule() {
         // given 1

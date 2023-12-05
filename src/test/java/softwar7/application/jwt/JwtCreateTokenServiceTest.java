@@ -16,7 +16,7 @@ class JwtCreateTokenServiceTest extends ServiceTest {
     @Autowired
     protected JwtCreateTokenService jwtCreateTokenService;
 
-    @DisplayName("회원 정보를 가지고 있는 AccessToken을 생성한다.")
+    @DisplayName("회원 정보를 가지고 있는 AccessToken을 생성")
     @Test
     void createAccessToken() {
         // given
@@ -33,7 +33,7 @@ class JwtCreateTokenServiceTest extends ServiceTest {
         assertThat(accessToken).isNotNull();
     }
 
-    @DisplayName("회원 id를 가지고 있는 RefreshToken을 생성한다.")
+    @DisplayName("회원 ID를 가지고 있는 RefreshToken을 생성")
     @Test
     void createRefreshToken() {
         // when

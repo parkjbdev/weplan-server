@@ -20,7 +20,7 @@ class MemberSigninServiceTest extends ServiceTest {
     @Autowired
     private MemberSigninService memberSigninService;
 
-    @DisplayName("입력한 정보가 일치하면 로그인에 성공한다.")
+    @DisplayName("등록된 ID 및 패스워드로 로그인")
     @Test
     void signin() {
         // given 1
@@ -51,7 +51,7 @@ class MemberSigninServiceTest extends ServiceTest {
         assertThat(response.getHeader(REFRESH_TOKEN.value)).isNotNull();
     }
 
-    @DisplayName("입력한 정보가 일치하지 않으면 로그인에 실패한다.")
+    @DisplayName("등록되지 않은 ID 및 패스워드로 로그인")
     @Test
     void signinFail() {
         // given 1

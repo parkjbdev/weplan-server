@@ -15,7 +15,7 @@ class SetHeaderServiceTest extends ServiceTest {
     @Autowired
     private SetHeaderService setHeaderService;
 
-    @DisplayName("HTTP 헤더 필드 AccessToken에 토큰을 넣는다.")
+    @DisplayName("HTTP 헤더 필드 AccessToken에 토큰 삽입")
     @Test
     void setAccessTokenHeader() {
         // given
@@ -30,7 +30,7 @@ class SetHeaderServiceTest extends ServiceTest {
         assertThat(accessToken).isEqualTo("Test AccessToken");
     }
 
-    @DisplayName("HTTP 헤더 필드 RefreshToken에 토큰을 넣는다.")
+    @DisplayName("HTTP 헤더 필드 RefreshToken에 토큰 삽입")
     @Test
     void setRefreshTokenHeader() {
         // given

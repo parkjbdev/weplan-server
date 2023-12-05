@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import softwar7.domain.channel.Channel;
 import softwar7.domain.member.persist.Member;
 import softwar7.global.exception.ForbiddenException;
+import softwar7.global.exception.NotFoundException;
 import softwar7.util.ServiceTest;
 
 import static org.assertj.core.api.Assertions.*;
@@ -15,7 +16,7 @@ class ChannelDeleteServiceTest extends ServiceTest {
     @Autowired
     private ChannelDeleteService channelDeleteService;
 
-    @DisplayName("채널 id로 특정 채널을 삭제한다")
+    @DisplayName("서버에 등록된 채널 ID로 채널 삭제")
     @Test
     void deleteChannel() {
         // given
@@ -40,9 +41,18 @@ class ChannelDeleteServiceTest extends ServiceTest {
         assertThat(channelRepository.count()).isEqualTo(0);
     }
 
-    @DisplayName("채널 수정 권한이 없으면 예외가 발생한다.")
+    @DisplayName("서버에 등록되지 않은 채널 ID로 채널 삭제")
     @Test
-    void deleteChannelFail() {
+    void deleteChannelNotFound() {
+        // expected
+        assertThatThrownBy(() ->
+                channelDeleteService.deleteChannel(9999L, 9999L))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @DisplayName("채널 삭제 권한이 없는 관리자가 채널 삭제")
+    @Test
+    void deleteChannelForbidden() {
         // given
         Member member = Member.builder()
                 .username("회원 이름")

@@ -22,7 +22,7 @@ class ScheduleFindServiceTest extends ServiceTest {
     @Autowired
     private ScheduleFindService scheduleFindService;
 
-    @DisplayName("해당 id로 특정 스케줄을 찾는다.")
+    @DisplayName("단일 스케줄 조회")
     @Test
     void getById() {
         // given 1
@@ -62,7 +62,7 @@ class ScheduleFindServiceTest extends ServiceTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
-    @DisplayName("해당 기간에 승인된 스케줄 목록을 가져온다.")
+    @DisplayName("해당 기간에 승인된 스케줄 목록 조회")
     @Test
     void findAllSchedulesByDate() {
         // given 1
@@ -99,6 +99,102 @@ class ScheduleFindServiceTest extends ServiceTest {
 
         // then
         assertThat(scheduleResponses.size()).isEqualTo(1);
+    }
+
+    @DisplayName("요청받은 스케줄 조회")
+    @Test
+    void findAllRequestSchedules() {
+        // given 1
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널 이름")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        Schedule schedule1 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .approval(Approval.PENDING)
+                .build();
+
+        Schedule schedule2 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .approval(Approval.PENDING)
+                .build();
+
+        Schedule schedule3 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .approval(Approval.APPROVED)
+                .build();
+
+        scheduleRepository.save(schedule1);
+        scheduleRepository.save(schedule2);
+        scheduleRepository.save(schedule3);
+
+        // when
+        List<ScheduleResponse> schedules =
+                scheduleFindService.findAllRequestSchedules();
+        assertThat(schedules.size()).isEqualTo(2);
+    }
+
+    @DisplayName("승인 대기 스케줄 조회")
+    @Test
+    void findAllPendingSchedules() {
+        // given 1
+        Member member = Member.builder()
+                .loginId("로그인 아이디")
+                .build();
+
+        memberRepository.save(member);
+
+        // given 2
+        Channel channel = Channel.builder()
+                .memberId(member.getId())
+                .channelName("채널 이름")
+                .channelPlace("채널 장소")
+                .build();
+
+        channelRepository.save(channel);
+
+        // given 3
+        Schedule schedule1 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .approval(Approval.PENDING)
+                .build();
+
+        Schedule schedule2 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .approval(Approval.PENDING)
+                .build();
+
+        Schedule schedule3 = Schedule.builder()
+                .memberId(member.getId())
+                .channelId(channel.getId())
+                .approval(Approval.APPROVED)
+                .build();
+
+        scheduleRepository.save(schedule1);
+        scheduleRepository.save(schedule2);
+        scheduleRepository.save(schedule3);
+
+        // when
+        List<ScheduleResponse> schedules =
+                scheduleFindService.findAllRequestSchedules();
+        assertThat(schedules.size()).isEqualTo(2);
     }
 
     @DisplayName("로그인한 회원의 스케줄 정보를 가져온다.")

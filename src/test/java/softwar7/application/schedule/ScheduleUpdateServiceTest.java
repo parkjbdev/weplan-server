@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import softwar7.domain.channel.Channel;
 import softwar7.domain.member.persist.Member;
 import softwar7.domain.schedule.persist.Schedule;
+import softwar7.global.exception.NotFoundException;
 import softwar7.mapper.shedule.dto.ScheduleUpdateRequest;
 import softwar7.util.ServiceTest;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ScheduleUpdateServiceTest extends ServiceTest {
@@ -17,7 +19,7 @@ class ScheduleUpdateServiceTest extends ServiceTest {
     @Autowired
     protected ScheduleUpdateService scheduleUpdateService;
 
-    @DisplayName("스케줄 id로 해당 스케줄 정보를 수정한다.")
+    @DisplayName("등록된 스케줄 ID를 사용해 형식에 맞는 데이터로 스케줄 업데이트")
     @Test
     void updateSchedule() {
         // given 1
@@ -56,5 +58,19 @@ class ScheduleUpdateServiceTest extends ServiceTest {
         Schedule findSchedule = scheduleRepository.getById(schedule.getId());
         assertThat(findSchedule.getScheduleName()).isEqualTo("수정 스케줄명");
         assertThat(findSchedule.getContent()).isEqualTo("수정 스케줄 내용");
+    }
+
+    @DisplayName("등록되지 않은 스케줄 ID를 사용해 스케줄 업데이트")
+    @Test
+    void updateScheduleFail() {
+        // given
+        ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
+                .name("수정 스케줄명")
+                .content("수정 스케줄 내용")
+                .build();
+
+        // expected
+        assertThatThrownBy(() -> scheduleUpdateService.updateSchedule(9999L, scheduleUpdateRequest))
+                .isInstanceOf(NotFoundException.class);
     }
 }

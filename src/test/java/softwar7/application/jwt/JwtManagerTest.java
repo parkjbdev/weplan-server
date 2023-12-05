@@ -20,7 +20,7 @@ class JwtManagerTest extends ServiceTest {
     @Autowired
     private JwtManager jwtManager;
 
-    @DisplayName("회원 정보를 가지고 있는 AccessToken을 생성한다.")
+    @DisplayName("회원 정보를 가지고 있는 AccessToken을 발급")
     @Test
     void createAccessToken() {
         // given
@@ -37,7 +37,7 @@ class JwtManagerTest extends ServiceTest {
         assertThat(accessToken).isNotNull();
     }
 
-    @DisplayName("회원 id를 가지고 있는 RefreshToken을 생성한다.")
+    @DisplayName("회원 ID를 가지고 있는 RefreshToken을 발급")
     @Test
     void createRefreshToken() {
         // when
@@ -47,7 +47,7 @@ class JwtManagerTest extends ServiceTest {
         assertThat(refreshToken).isNotNull();
     }
 
-    @DisplayName("HTTP 헤더 필드에 로그인 토큰 정보를 넣는다.")
+    @DisplayName("HTTP 헤더 필드에 로그인 토큰 정보 삽입")
     @Test
     void setAccessTokenHeader() {
         // given
@@ -65,7 +65,7 @@ class JwtManagerTest extends ServiceTest {
         assertThat(refreshToken).isEqualTo("Test RefreshToken");
     }
 
-    @DisplayName("로그인한 회원의 토큰 관련 정보를 DB에 저장한다.")
+    @DisplayName("로그인한 회원의 토큰 관련 정보를 DB에 저장")
     @Test
     void saveJwtRefreshToken() {
         // given
@@ -86,7 +86,7 @@ class JwtManagerTest extends ServiceTest {
         assertThat(jwtRefreshToken.getRefreshToken()).isEqualTo("Test RefreshToken");
     }
 
-    @DisplayName("로그인한 회원의 토큰 관련 정보가 이미 존재하면 DB에서 업데이트한다.")
+    @DisplayName("이미 존재하는 회원의 토큰 관련 정보 DB에서 업데이트")
     @Test
     void updateJwtRefreshToken() {
         // given

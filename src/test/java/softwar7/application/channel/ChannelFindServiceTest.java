@@ -20,7 +20,7 @@ class ChannelFindServiceTest extends ServiceTest {
     @Autowired
     private ChannelFindService channelFindService;
 
-    @DisplayName("채널 id로 해당 채널 정보를 가져온다.")
+    @DisplayName("서버에 등록된 채널 ID로 단일 채널 조회")
     @Test
     void findChannel() {
         // given 1
@@ -49,7 +49,7 @@ class ChannelFindServiceTest extends ServiceTest {
         assertThat(channelResponse.createdBy()).isEqualTo(member.getUsername());
     }
 
-    @DisplayName("채널 id와 관련된 채널이 존재하지 않으면 예외가 발생한다.")
+    @DisplayName("서버에 등록되지 않은 채널 ID로 단일 채널 조회")
     @Test
     void findChannelFail() {
         // given 1
@@ -64,7 +64,7 @@ class ChannelFindServiceTest extends ServiceTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
-    @DisplayName("모든 채널의 정보를 가져온다.")
+    @DisplayName("채널 ID 리스트로 전체 채널 조회")
     @Test
     void findAll() {
         // given 1

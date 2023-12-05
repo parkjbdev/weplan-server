@@ -15,7 +15,7 @@ class ScheduleDeleteServiceTest extends ServiceTest {
     @Autowired
     protected ScheduleDeleteService scheduleDeleteService;
 
-    @DisplayName("스케줄 id로 해당 스케줄을 삭제한다.")
+    @DisplayName("스케줄 삭제")
     @Test
     void deleteSchedule() {
         // given 1

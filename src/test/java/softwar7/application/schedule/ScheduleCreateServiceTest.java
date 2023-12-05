@@ -22,7 +22,7 @@ class ScheduleCreateServiceTest extends ServiceTest {
     @Autowired
     private ScheduleCreateService scheduleCreateService;
 
-    @DisplayName("해당 시간으로 스케줄 예약을 신청한다.")
+    @DisplayName("형식에 맞는 데이터로 DateTime이 겹치지 않는 스케줄 생성")
     @Test
     void create() {
         // given 1
@@ -63,7 +63,7 @@ class ScheduleCreateServiceTest extends ServiceTest {
         assertThat(scheduleRepository.count()).isEqualTo(1);
     }
 
-    @DisplayName("이미 해당 시간에 대한 스케줄 예약이 존재한다면 예외가 발생한다.")
+    @DisplayName("형식에 맞는 데이터로 DateTime이 겹치는 스케줄 생성")
     @Test
     void createFail() {
         // given 1
