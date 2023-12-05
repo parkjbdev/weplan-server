@@ -29,7 +29,7 @@ public class ScheduleCreateService {
     @Transactional
     public void create(final MemberSession memberSession, final ScheduleSaveRequest dto) {
         channelRepository.getById(dto.channelId());
-        if (scheduleRepository.isNotOverlapping(dto.start(), dto.end())) {
+        if (scheduleRepository.isNotOverlapping(dto.channelId(), dto.start(), dto.end())) {
             Schedule schedule = ScheduleMapper.toEntity(memberSession, dto);
             scheduleRepository.save(schedule);
         } else {

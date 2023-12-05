@@ -96,12 +96,13 @@ public class ScheduleRepository {
         scheduleJpaRepository.delete(schedule);
     }
 
-    public boolean isNotOverlapping(final LocalDateTime start, final LocalDateTime end) {
+    public boolean isNotOverlapping(final long channelId, final LocalDateTime start, final LocalDateTime end) {
         return queryFactory
                 .selectFrom(schedule)
                 .where(
-                        schedule.startTime.lt(end).and(schedule.endTime.gt(start))
-                )
+                        schedule.channelId.eq(channelId)
+                                .and(schedule.startTime.lt(end).and(schedule.endTime.gt(start))
+                                ))
                 .fetchOne() == null;
     }
 

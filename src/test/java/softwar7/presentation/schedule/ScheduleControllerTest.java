@@ -186,7 +186,7 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("단일 스케줄 조회에 성공합니다")
+    @DisplayName("단일 스케줄 조회에 성공")
     void getSchedule() throws Exception {
         // given 1
         String encodedPassword = passwordEncoder.encode("비밀번호 1234");
@@ -734,7 +734,7 @@ class ScheduleControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("스케줄 삭제에 성공합니다")
+    @DisplayName("스케줄 삭제 성공")
     void deleteSchedule() throws Exception {
 
         // given 1
