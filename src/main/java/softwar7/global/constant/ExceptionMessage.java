@@ -22,7 +22,8 @@ public enum ExceptionMessage {
     REFRESH_TOKEN_NOT_MATCH("Refresh Token이 일치하지 않습니다"),
     REFRESH_TOKEN_NOT_EXIST("Refresh Token을 찾을 수 없습니다"),
     REFRESH_TOKEN_NOT_VALID("Refresh Token이 유효하지 않습니다"),
-    ALREADY_EXIST_SCHEDULE("이미 해당 시간에 스케줄이 존재합니다");
+    ALREADY_EXIST_SCHEDULE("이미 해당 시간에 스케줄이 존재합니다"),
+    BAD_REQUEST_SCHEDULE_TIME("스케줄 시작 시간은 종료 시간보다 늦을 수 없습니다");
 
     public final String message;
 
